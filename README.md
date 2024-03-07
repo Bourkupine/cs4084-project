@@ -1,2 +1,10 @@
 # cs4084-project
-Group Project for CS4084
+## Mug Shots
+Discover Coffee
+
+---
+
+Bayan Nezamabad \
+Blake Ryan \
+Euan Bourke \
+Thomas McCarthy
