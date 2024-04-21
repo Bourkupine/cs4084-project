@@ -1,5 +1,5 @@
 # cs4084-project
-## Mug Shots
+## MugShot
 Discover Coffee
 
 ---
