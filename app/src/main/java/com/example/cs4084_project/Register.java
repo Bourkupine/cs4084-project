@@ -33,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
 
@@ -98,20 +100,36 @@ public class Register extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter an email address", Toast.LENGTH_SHORT).show();
                     return;
+                } else if (!validateEmail(email)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 if (TextUtils.isEmpty(firstName)) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a first name", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!validateName(firstName)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a valid first name between 2 and 32 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(lastName)) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a last name", Toast.LENGTH_SHORT).show();
                     return;
+                } else if (!validateName(lastName)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a valid last name between 2 and 32 characters", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 if (TextUtils.isEmpty(password)) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a password", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!validatePassword(password)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Passwords have at least 8 characters including a number, lowercase letter, and uppercase letter", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (!password.equals(confirmPassword)) {
@@ -125,36 +143,63 @@ public class Register extends AppCompatActivity {
                 user.put("email", email);
                 user.put("first_name", firstName);
                 user.put("last_name", lastName);
-                db.collection("users")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        progressBar.setVisibility(View.GONE);
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(Register.this, "Account registered successfully!", Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(getApplicationContext(), Login.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            Toast.makeText(Register.this, "Authentication failed, please try again", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(Register.this, "Failed to create account, please try again", Toast.LENGTH_SHORT).show();
-                                Log.w(TAG, "Failed to create account!", e);
+                            public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(Register.this, "Account registered successfully!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(Register.this, "Authentication failed, please try again", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Register.this, "Failed to create account, please try again", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "Failed to create account!", e);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
             }
         });
+    }
+
+    private static boolean validateEmail(String email) {
+        Pattern pattern;
+        Matcher matcher;
+        final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+
+        return matcher.matches();
+    }
+
+    private static boolean validatePassword(String password) {
+        Pattern pattern;
+        Matcher matcher;
+        final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+    }
+
+    private static boolean validateName(String name) {
+        Pattern pattern;
+        Matcher matcher;
+        final String NAME_PATTERN = "^[A-Za-z '-]{2,32}$";
+        pattern = Pattern.compile(NAME_PATTERN);
+        matcher = pattern.matcher(name);
+
+        return matcher.matches();
     }
 }
