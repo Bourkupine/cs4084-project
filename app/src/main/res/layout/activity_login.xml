@@ -53,12 +53,6 @@
             android:textColor="@color/primary" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <Button
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
@@ -67,6 +61,12 @@
         android:textSize="15sp"
         android:fontFamily="@font/open_sans"
         android:text="@string/login" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <View
         android:layout_width="320dp"

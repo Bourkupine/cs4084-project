@@ -100,12 +100,6 @@
             android:textColor="@color/primary" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <Button
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
@@ -114,6 +108,12 @@
         android:width="170dp"
         android:text="@string/create_account"
         android:textSize="15sp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/goToLogin"

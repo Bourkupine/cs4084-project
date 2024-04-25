@@ -17,15 +17,20 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextPassword;
+    TextInputEditText editTextEmail, editTextFirstName, editTextLastName, editTextPassword, editTextConfirmPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -54,7 +59,10 @@ public class Register extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
+        editTextFirstName = findViewById(R.id.first_name);
+        editTextLastName = findViewById(R.id.last_name);
         editTextPassword = findViewById(R.id.password);
+        editTextConfirmPassword = findViewById(R.id.confirm_password);
         buttonReg = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
         goToLogin = findViewById(R.id.goToLogin);
@@ -71,34 +79,72 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email, password;
+                String email, firstName, lastName, password, confirmPassword;
                 email = String.valueOf(editTextEmail.getText());
+                firstName = String.valueOf(editTextFirstName.getText());
+                lastName = String.valueOf(editTextLastName.getText());
                 password = String.valueOf(editTextPassword.getText());
+                confirmPassword = String.valueOf(editTextConfirmPassword.getText());
 
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(Register.this, "Please enter email", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter an email address", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                if (TextUtils.isEmpty(firstName)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a first name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(lastName)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a last name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(Register.this, "Please enter password", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Please enter a password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!password.equals(confirmPassword)) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(Register.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressBar.setVisibility(View.GONE);
-                        if (task.isSuccessful()) {
-                            Toast.makeText(Register.this, "Account registered successfully!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), Login.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> user = new HashMap<>();
+                user.put("email", email);
+                user.put("first_name", firstName);
+                user.put("last_name", lastName);
+                final boolean[] success = {true};
+                db.collection("users")
+                        .add(user)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(Register.this, "Failed to create account, please try again", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                success[0] = false;
+                            }
+                        });
+
+                if (success[0]) {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.GONE);
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Register.this, "Account registered successfully!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), Login.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(Register.this, "Authentication failed, please try again", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
