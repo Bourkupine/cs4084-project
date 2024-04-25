@@ -14,9 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:text="@string/register"
-        android:textSize="20sp"
+        android:fontFamily="@font/open_sans_light"
+        android:gravity="top|center"
+        android:text="@string/create_an_account"
+        android:textSize="40sp"
         android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -27,7 +28,44 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email" />
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/email_hint"
+            android:textColor="@color/primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/first_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/first_name_hint"
+            android:textColor="@color/primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/last_name_hint"
+            android:textColor="@color/primary" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -38,7 +76,28 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password" />
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/password_hint"
+            android:textColor="@color/primary" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="@string/confirm_password_hint"
+            android:textColor="@color/primary" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ProgressBar
@@ -51,13 +110,18 @@
         android:id="@+id/btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register" />
+        android:layout_marginBottom="20dp"
+        android:width="170dp"
+        android:text="@string/create_account"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/goToLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
         android:gravity="center"
-        android:text="@string/already_registered_login" />
+        android:text="@string/already_registered_login"
+        android:textSize="25sp" />
 
 </LinearLayout>
