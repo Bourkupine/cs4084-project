@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_foreground"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/explore"
+        android:icon="@drawable/ic_explore_foreground"
+        android:title="@string/explore" />
+    <item
+        android:id="@+id/coffee"
+        android:icon="@drawable/ic_coffee_foreground"
+        android:title="@string/coffee" />
+    <item
+        android:id="@+id/account"
+        android:icon="@drawable/ic_account_foreground"
+        android:title="@string/account" />
 </menu>
