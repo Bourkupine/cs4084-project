@@ -1,26 +1,20 @@
 package com.example.cs4084_project;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
-
-    FirebaseAuth auth;
-    Button signOutButton;
-    TextView textView;
-    FirebaseUser user;
+public class MainActivity extends AppCompatActivity
+        implements BottomNavigationView.OnNavigationItemSelectedListener {
+    BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +27,34 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        auth = FirebaseAuth.getInstance();
-        signOutButton = findViewById(R.id.sign_out);
-        textView = findViewById(R.id.user_details);
-        user = auth.getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(getApplicationContext(), Login.class);
-            startActivity(intent);
-            finish();
-        } else {
-            textView.setText(user.getEmail());
-        }
+        bottomNavigationView = findViewById(R.id.bottomNavMenu);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setOnApplyWindowInsetsListener(null);
+        bottomNavigationView.setPadding(0,0,0,0);
+    }
 
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+    HomeFragment homeFragment = new HomeFragment();
+    ExploreFragment exploreFragment = new ExploreFragment();
+    CoffeeFragment coffeeFragment = new CoffeeFragment();
+    AccountFragment accountFragment = new AccountFragment();
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.home) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
+            return true;
+        } else if (itemId == R.id.explore) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, exploreFragment).commit();
+            return true;
+        } else if (itemId == R.id.coffee) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, coffeeFragment).commit();
+            return true;
+        } else if (itemId == R.id.account) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, accountFragment).commit();
+            return true;
+        }
+        return false;
     }
 }
