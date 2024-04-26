@@ -11,4 +11,8 @@
     <string name="last_name_hint">Enter Last Name</string>
     <string name="confirm_password_hint">Re-enter Password</string>
     <string name="create_account">Create Account</string>
+    <string name="home">Home</string>
+    <string name="explore">Explore</string>
+    <string name="coffee">Coffee</string>
+    <string name="account">Account</string>
 </resources>
