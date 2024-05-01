@@ -39,7 +39,7 @@ public class AccountFragment extends Fragment {
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+                auth.signOut();
                 Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
                 startActivity(intent);
                 requireActivity().finish();

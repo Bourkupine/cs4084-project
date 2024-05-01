@@ -7,8 +7,6 @@
     <string name="dont_have_an_account_register">Don\'t have an account? Register</string>
     <string name="sign_out">Sign out</string>
     <string name="create_an_account">Create an Account</string>
-    <string name="first_name_hint">Enter First Name</string>
-    <string name="last_name_hint">Enter Last Name</string>
     <string name="confirm_password_hint">Re-enter Password</string>
     <string name="create_account">Create Account</string>
     <string name="home">Home</string>
@@ -18,4 +16,5 @@
     <string name="profile_picture">Profile Picture</string>
     <string name="image">image</string>
     <string name="create_post">Create Post</string>
+    <string name="enter_user_name">Enter User Name</string>
 </resources>
