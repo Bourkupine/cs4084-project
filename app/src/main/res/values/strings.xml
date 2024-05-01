@@ -15,4 +15,6 @@
     <string name="explore">Explore</string>
     <string name="coffee">Coffee</string>
     <string name="account">Account</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="image">image</string>
 </resources>
