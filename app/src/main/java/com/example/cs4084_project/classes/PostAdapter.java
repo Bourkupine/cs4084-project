@@ -78,7 +78,7 @@ public class PostAdapter extends BaseAdapter {
 
         TextView date = view.findViewById(R.id.post_date);
         Date d = post.getDate().toDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YY hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy HH:mm", Locale.UK);
         date.setText(sdf.format(d));
 
         TextView description = view.findViewById(R.id.post_description);
