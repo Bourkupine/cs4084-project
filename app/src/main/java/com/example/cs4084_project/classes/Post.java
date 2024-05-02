@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class Post implements Comparable<Post> {
 
+    private String postId;
     private String posterId;
     private String profilePicturePath;
     private String username;
@@ -13,10 +14,13 @@ public class Post implements Comparable<Post> {
     private Timestamp date;
     private Cafe cafe;
     private int rating;
+    private int likes;
+    private int dislikes;
 
     public Post() {}
 
-    public Post(String posterId, String profilePicturePath, String username, String title, String description, Timestamp date) {
+    public Post(String postId, String posterId, String profilePicturePath, String username, String title, String description, Timestamp date) {
+        this.postId = postId;
         this.posterId = posterId;
         this.profilePicturePath = profilePicturePath;
         this.username = username;
@@ -25,19 +29,19 @@ public class Post implements Comparable<Post> {
         this.date = date;
     }
 
-    public Post(String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId) {
-        this(posterId, profilePicturePath, username, title, description, date);
+    public Post(String postId, String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId) {
+        this(postId, posterId, profilePicturePath, username, title, description, date);
         this.imagePath = imagePath;
     }
 
-    public Post(String profilePicturePath, String username, String title, String description, Timestamp date, String posterId, Cafe cafe, int rating) {
-        this(posterId, profilePicturePath, username, title, description, date);
+    public Post(String postId, String profilePicturePath, String username, String title, String description, Timestamp date, String posterId, Cafe cafe, int rating) {
+        this(postId, posterId, profilePicturePath, username, title, description, date);
         this.cafe = cafe;
         this.rating = rating;
     }
 
-    public Post(String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId, Cafe cafe, int rating) {
-        this(profilePicturePath, username, title, description, imagePath, date, posterId);
+    public Post(String postId, String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId, Cafe cafe, int rating) {
+        this(postId, profilePicturePath, username, title, description, imagePath, date, posterId);
         this.cafe = cafe;
         this.rating = rating;
     }
@@ -114,5 +118,33 @@ public class Post implements Comparable<Post> {
     @Override
     public int compareTo(Post p) {
         return getDate().compareTo(p.getDate());
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void addLike() {
+        likes++;
+    }
+
+    public void removeLike() {
+        likes--;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void addDislike() {
+        dislikes++;
+    }
+
+    public void removeDislike() {
+        dislikes--;
+    }
+
+    public String getPostId() {
+        return postId;
     }
 }
