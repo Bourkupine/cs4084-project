@@ -1,7 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/accent"
+    android:orientation="vertical"
     tools:context=".CreatePostFragment">
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="@font/open_sans"
+            android:padding="10dp"
+            android:text="@string/create_post"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="150dp"
+            android:fontFamily="@font/open_sans"
+            android:padding="0dp"
+            android:text="@string/x"
+            android:textColor="@color/black_semi_transparent"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/post_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent2"
+        android:fontFamily="@font/open_sans"
+        android:hint="@string/post_title"
+        android:inputType="text"
+        android:maxLength="32"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black_semi_transparent"
+        android:textSize="15sp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/post_description"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/accent"
+        android:fontFamily="@font/open_sans"
+        android:gravity="start"
+        android:hint="@string/post_description"
+        android:inputType="text"
+        android:maxLength="32"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black_semi_transparent"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent2"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/select_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:backgroundTint="@color/primary"
+            android:fontFamily="@font/open_sans"
+            android:text="@string/select_image"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/image_preview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/image_preview"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_image_foreground" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/post_cafe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent"
+        android:fontFamily="@font/open_sans"
+        android:gravity="start"
+        android:hint="@string/cafe"
+        android:maxLength="32"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black_semi_transparent"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/accent2"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/star_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/star"
+            android:maxWidth="75dp"
+            android:src="@drawable/ic_star_foreground" />
+
+        <ImageView
+            android:id="@+id/star_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/star"
+            android:maxWidth="75dp"
+            android:src="@drawable/ic_star_foreground" />
+
+        <ImageView
+            android:id="@+id/star_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/star"
+            android:maxWidth="75dp"
+            android:src="@drawable/ic_star_foreground" />
+
+        <ImageView
+            android:id="@+id/star_four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/star"
+            android:maxWidth="75dp"
+            android:src="@drawable/ic_star_foreground" />
+
+        <ImageView
+            android:id="@+id/star_five"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/star"
+            android:maxWidth="75dp"
+            android:src="@drawable/ic_star_foreground" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/create_post_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:fontFamily="@font/open_sans"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/create_post"
+        android:textSize="20sp" />
+
+</LinearLayout>
