@@ -24,17 +24,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HomeFragment extends Fragment {
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    FirebaseFirestore db;
-    ListView postsListView;
-    ArrayList<Post> posts = new ArrayList<>();
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private FirebaseFirestore db;
+    private ListView postsListView;
+    private ArrayList<Post> allPosts = new ArrayList<>();
+    private PostAdapter adapter;
 
     public HomeFragment() {
     }
@@ -53,9 +57,10 @@ public class HomeFragment extends Fragment {
             requireActivity().finish();
         }
 
+        this.getAllPosts();
         this.setProfilePictureImageView(rootView, user.getUid());
         postsListView = rootView.findViewById(R.id.posts);
-        PostAdapter adapter = new PostAdapter(this.getContext(), posts);
+        adapter = new PostAdapter(this.getContext(), allPosts);
         postsListView.setAdapter(adapter);
 
         return rootView;
@@ -68,7 +73,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    String profilePic = task.getResult().getString("profile_picture");
+                    String profilePic = task.getResult().getString("profilePicture");
                     if (profilePic != null) {
                         profilePicture.setImageTintList(null);
                         Picasso.get().load(profilePic).into(profilePicture);
@@ -78,5 +83,46 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void getAllPosts() {
+        db.collection("posts")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Post post = document.toObject(Post.class);
+                                db.collection("users").document(post.getPosterId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String profilePic = task.getResult().getString("profilePicture");
+                                            if (profilePic != null) {
+                                                post.setProfilePicturePath(profilePic);
+                                            }
+                                            post.setUsername(task.getResult().getString("username"));
+                                            allPosts.add(post);
+                                            Collections.sort(allPosts);
+                                            Collections.reverse(allPosts);
+                                            adapter.notifyDataSetChanged();
+                                        } else {
+                                            Log.d(TAG, "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        allPosts = new ArrayList<>();
     }
 }
