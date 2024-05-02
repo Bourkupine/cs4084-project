@@ -37,11 +37,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback {
 
     FirebaseAuth auth;
     FirebaseUser user;
-    GoogleMap myMap;
-    View mapView;
     View rootView;
-
-    private FusedLocationProviderClient fusedLocationClient;
 
     public ExploreFragment() {
     }
