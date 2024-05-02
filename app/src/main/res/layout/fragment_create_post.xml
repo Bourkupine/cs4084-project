@@ -58,8 +58,8 @@
         android:fontFamily="@font/open_sans"
         android:gravity="start"
         android:hint="@string/post_description"
-        android:inputType="text"
-        android:maxLength="32"
+        android:inputType="textMultiLine"
+        android:maxLength="300"
         android:padding="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/black_semi_transparent"
@@ -171,5 +171,15 @@
         android:paddingBottom="10dp"
         android:text="@string/create_post"
         android:textSize="20sp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/primary"
+        android:visibility="gone" />
 
 </LinearLayout>

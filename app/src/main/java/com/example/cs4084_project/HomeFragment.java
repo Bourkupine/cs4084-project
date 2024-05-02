@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.example.cs4084_project.classes.Cafe;
 import com.example.cs4084_project.classes.Post;
 import com.example.cs4084_project.classes.PostAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -110,10 +111,20 @@ public class HomeFragment extends Fragment {
                                                 post.setProfilePicturePath(profilePic);
                                             }
                                             post.setUsername(task.getResult().getString("username"));
-                                            allPosts.add(post);
-                                            Collections.sort(allPosts);
-                                            Collections.reverse(allPosts);
-                                            adapter.notifyDataSetChanged();
+                                            db.collection("cafes").document(post.getCafeId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    Cafe cafe = task.getResult().toObject(Cafe.class);
+                                                    if (cafe != null) {
+                                                        post.setCafe(cafe);
+                                                    }
+                                                    allPosts.add(post);
+                                                    Collections.sort(allPosts);
+                                                    Collections.reverse(allPosts);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            });
+
                                         } else {
                                             Log.d(TAG, "get failed with ", task.getException());
                                         }

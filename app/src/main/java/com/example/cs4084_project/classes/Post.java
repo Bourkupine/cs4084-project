@@ -6,6 +6,7 @@ public class Post implements Comparable<Post> {
 
     private String postId;
     private String posterId;
+    private String cafeId;
     private String profilePicturePath;
     private String username;
     private String title;
@@ -18,34 +19,6 @@ public class Post implements Comparable<Post> {
     private int dislikes;
 
     public Post() {}
-
-    public Post(String postId, String posterId, String profilePicturePath, String username, String title, String description, Timestamp date) {
-        this.postId = postId;
-        this.posterId = posterId;
-        this.profilePicturePath = profilePicturePath;
-        this.username = username;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-    }
-
-    public Post(String postId, String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId) {
-        this(postId, posterId, profilePicturePath, username, title, description, date);
-        this.imagePath = imagePath;
-    }
-
-    public Post(String postId, String profilePicturePath, String username, String title, String description, Timestamp date, String posterId, Cafe cafe, int rating) {
-        this(postId, posterId, profilePicturePath, username, title, description, date);
-        this.cafe = cafe;
-        this.rating = rating;
-    }
-
-    public Post(String postId, String profilePicturePath, String username, String title, String description, String imagePath, Timestamp date, String posterId, Cafe cafe, int rating) {
-        this(postId, profilePicturePath, username, title, description, imagePath, date, posterId);
-        this.cafe = cafe;
-        this.rating = rating;
-    }
-
 
     public String getProfilePicturePath() {
         return profilePicturePath;
@@ -146,5 +119,9 @@ public class Post implements Comparable<Post> {
 
     public String getPostId() {
         return postId;
+    }
+
+    public String getCafeId() {
+        return cafeId;
     }
 }
