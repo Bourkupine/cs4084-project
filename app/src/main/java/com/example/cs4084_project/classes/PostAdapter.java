@@ -109,8 +109,8 @@ public class PostAdapter extends BaseAdapter {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    ArrayList<String> likes = (ArrayList) task.getResult().get("likes");
-                    ArrayList<String> dislikes = (ArrayList) task.getResult().get("dislikes");
+                    ArrayList<String> likes = (ArrayList<String>) task.getResult().get("likes");
+                    ArrayList<String> dislikes = (ArrayList<String>) task.getResult().get("dislikes");
 
                     if (likes != null) {
                         for (String id: likes) {
@@ -151,8 +151,8 @@ public class PostAdapter extends BaseAdapter {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<String> likes = (ArrayList) task.getResult().get("likes");
-                            ArrayList<String> dislikes = (ArrayList) task.getResult().get("dislikes");
+                            ArrayList<String> likes = (ArrayList<String>) task.getResult().get("likes");
+                            ArrayList<String> dislikes = (ArrayList<String>) task.getResult().get("dislikes");
 
                             if (likes != null) {
                                 for (String id: likes) {
@@ -190,8 +190,8 @@ public class PostAdapter extends BaseAdapter {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<String> likes = (ArrayList) task.getResult().get("likes");
-                            ArrayList<String> dislikes = (ArrayList) task.getResult().get("dislikes");
+                            ArrayList<String> likes = (ArrayList<String>) task.getResult().get("likes");
+                            ArrayList<String> dislikes = (ArrayList<String>) task.getResult().get("dislikes");
 
                             if (dislikes != null) {
                                 for (String id: dislikes) {
