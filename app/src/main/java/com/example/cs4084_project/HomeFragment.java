@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -33,10 +34,7 @@ import java.util.Collections;
 
 public class HomeFragment extends Fragment {
 
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     private FirebaseFirestore db;
-    private ListView postsListView;
     private ArrayList<Post> allPosts = new ArrayList<>();
     private PostAdapter adapter;
 
@@ -47,8 +45,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
         if (user == null) {
@@ -57,9 +55,18 @@ public class HomeFragment extends Fragment {
             requireActivity().finish();
         }
 
+        Button createPostButton = rootView.findViewById(R.id.create_post);
+        createPostButton.setOnClickListener(v -> {
+            Fragment createPostFragment = new CreatePostFragment();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.fade_out)
+                    .addToBackStack(null)
+                    .replace(R.id.flFragment, createPostFragment)
+                    .commit();
+        });
         this.getAllPosts();
         this.setProfilePictureImageView(rootView, user.getUid());
-        postsListView = rootView.findViewById(R.id.posts);
+        ListView postsListView = rootView.findViewById(R.id.posts);
         adapter = new PostAdapter(this.getContext(), allPosts);
         postsListView.setAdapter(adapter);
 

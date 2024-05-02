@@ -28,6 +28,7 @@
             app:tint="@color/primary" />
 
         <Button
+            android:id="@+id/create_post"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
