@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113375384546",
+    "project_id": "mugshot-250bf",
+    "storage_bucket": "mugshot-250bf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113375384546:android:d7dc63c32637cdee36dfbb",
+        "android_client_info": {
+          "package_name": "com.example.cs4084_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzbVyhHYOuXt8GqYMj2gHVnpdaxgLpgHg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
