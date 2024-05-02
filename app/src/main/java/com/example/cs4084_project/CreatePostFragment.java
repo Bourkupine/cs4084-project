@@ -216,6 +216,10 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
             imagePreview.setDrawingCacheEnabled(true);
             imagePreview.buildDrawingCache();
             Bitmap imageBitmap = ((BitmapDrawable) imagePreview.getDrawable()).getBitmap();
+            double ratio = 256.0 / imageBitmap.getWidth();
+            if (ratio < 1) {
+                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, 256, (int) Math.floor(imageBitmap.getHeight() * ratio), true);
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
