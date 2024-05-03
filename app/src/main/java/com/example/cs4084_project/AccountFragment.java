@@ -25,12 +25,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class AccountFragment extends Fragment {
 
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
     Button signOutButton;
+    ArrayList<String> friends_list = new ArrayList<>();
 
     public AccountFragment() {
     }
@@ -71,6 +74,8 @@ public class AccountFragment extends Fragment {
 
         ImageView profilePicture = view.findViewById(R.id.profile_picture);
         TextView username = view.findViewById(R.id.profile_name);
+        TextView post_count = view.findViewById(R.id.profile_post_count);
+        TextView friend_count = view.findViewById(R.id.profile_friends_count);
 
         DocumentReference userDoc = db.collection("users").document(uid);
 
@@ -80,11 +85,23 @@ public class AccountFragment extends Fragment {
                 if (task.isSuccessful()) {
                     String profilePic = task.getResult().getString("profilePicture");
                     String name = task.getResult().getString("username");
+                    int friend_list_size = 0;
+
                     username.setText(name);
                     if (profilePic != null) {
                         profilePicture.setImageTintList(null);
                         Picasso.get().load(profilePic).into(profilePicture);
                     }
+
+                    ArrayList<String> friends = (ArrayList<String>) task.getResult().get("friends");
+
+                    if (friends != null) {
+                        int size = friends.size();
+                        friends_list.addAll(friends);
+                        friend_list_size = friends.size();
+                    }
+                    String friend_string = "Friends: " + friend_list_size;
+                    friend_count.setText(friend_string);
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
