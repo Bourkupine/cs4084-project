@@ -17,4 +17,16 @@
     <string name="image">image</string>
     <string name="create_post">Create Post</string>
     <string name="enter_user_name">Enter User Name</string>
+    <string name="post_title">Post Title</string>
+    <string name="post_description">Post Description</string>
+    <string name="select_image">Select Image</string>
+    <string name="image_preview">Image Preview</string>
+    <string name="cafe">Cafe</string>
+    <string name="star">star</string>
+    <string name="x">X</string>
+    <string name="enter_cafe_name">Enter Cafe Name</string>
+    <string name="enter_cafe_details">Enter Cafe Details</string>
+    <string name="enter_cafe_location">Enter Cafe Location</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        FragmentTransaction fr = fm.beginTransaction();
         Fragment currentFragment = getVisibleFragment();
         int itemId = item.getItemId();
         if (itemId == R.id.home) {
