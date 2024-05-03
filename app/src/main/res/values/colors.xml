@@ -3,6 +3,7 @@
     <color name="black">#FF303030</color>
     <color name="black_semi_transparent">#BB303030</color>
     <color name="white">#FFFDFDFD</color>
+    <color name="white_semi_transparent">#BBFDFDFD</color>
     <color name="grey">#FF6A6A6A</color>
     <color name="primary">#86775A</color>
     <color name="accent">#DFD6C4</color>

@@ -29,4 +29,7 @@
     <string name="enter_cafe_location">Enter Cafe Location</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="post_a_comment">Post a Comment</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
 </resources>
