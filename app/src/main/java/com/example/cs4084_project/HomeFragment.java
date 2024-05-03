@@ -33,7 +33,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
 
     private FirebaseFirestore db;
     private ArrayList<Post> allPosts = new ArrayList<>();
@@ -68,10 +68,20 @@ public class HomeFragment extends Fragment {
         this.getAllPosts();
         this.setProfilePictureImageView(rootView, user.getUid());
         ListView postsListView = rootView.findViewById(R.id.posts);
-        adapter = new PostAdapter(this.getContext(), allPosts);
+        adapter = new PostAdapter(this.getContext(), allPosts, this);
         postsListView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void openPost(Post post) {
+        Fragment viewPostFragment = new ViewPostFragment(post);
+        getParentFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                .addToBackStack(null)
+                .replace(R.id.flFragment, viewPostFragment)
+                .commit();
     }
 
     private void setProfilePictureImageView(View view, String uid) {
