@@ -12,8 +12,8 @@
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:columnCount="3"
+        android:layout_height="130dp"
+        android:columnCount="4"
         android:rowCount="2">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -23,7 +23,8 @@
             android:layout_row="0"
             android:layout_rowSpan="2"
             android:layout_column="0"
-            android:layout_marginStart="25dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
             android:contentDescription="@string/profile_picture"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_account_foreground"
@@ -37,12 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_row="0"
             android:layout_column="1"
-            android:layout_columnSpan="2"
+            android:layout_columnSpan="3"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:fontFamily="@font/open_sans"
             android:text="Blake Rhombus"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/profile_post_count"
@@ -51,6 +52,7 @@
             android:layout_row="1"
             android:layout_column="1"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Posts: 12" />
 
         <TextView
@@ -60,7 +62,19 @@
             android:layout_row="1"
             android:layout_column="2"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
             android:text="Friends: 12" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profile_options"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_row="0"
+            android:layout_column="3"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/ic_menu_foreground" />
 
     </GridLayout>
 
