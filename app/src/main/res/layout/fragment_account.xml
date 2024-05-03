@@ -42,7 +42,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:fontFamily="@font/open_sans"
-            android:text="Blake Rhombus"
+            android:text="@string/username"
             android:textSize="20sp" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_column="1"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
-            android:text="Posts: 12" />
+            android:text="@string/post_count" />
 
         <TextView
             android:id="@+id/profile_friends_count"
@@ -63,7 +63,7 @@
             android:layout_column="2"
             android:layout_marginStart="30dp"
             android:layout_marginTop="10dp"
-            android:text="Friends: 12" />
+            android:text="@string/friends_count" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/profile_options"
