@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.cs4084_project.classes.CommentAdapter;
 import com.example.cs4084_project.classes.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,9 +25,7 @@ import com.squareup.picasso.Picasso;
 
 public class ViewPostFragment extends Fragment {
 
-    FirebaseAuth auth;
-    FirebaseUser user;
-    Post post;
+    private final Post post;
 
     public ViewPostFragment(Post post) {
         this.post = post;
@@ -35,8 +35,8 @@ public class ViewPostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_view_post, container, false);
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
 
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
@@ -55,6 +55,10 @@ public class ViewPostFragment extends Fragment {
         }
 
         setPostInformation(rootView);
+
+        ListView commentsListView = rootView.findViewById(R.id.comments);
+        CommentAdapter adapter = new CommentAdapter(this.requireContext(), post.getComments());
+        commentsListView.setAdapter(adapter);
 
         return rootView;
     }

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.cs4084_project.classes.Cafe;
+import com.example.cs4084_project.classes.Comment;
 import com.example.cs4084_project.classes.Post;
 import com.example.cs4084_project.classes.PostAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -76,12 +77,27 @@ public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
 
     @Override
     public void openPost(Post post) {
-        Fragment viewPostFragment = new ViewPostFragment(post);
-        getParentFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
-                .addToBackStack(null)
-                .replace(R.id.flFragment, viewPostFragment)
-                .commit();
+        db.collection("posts").document(post.getPostId()).collection("comments").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();
+                ArrayList<Comment> comments = new ArrayList<>();
+                for (DocumentSnapshot d : queryDocumentSnapshots) {
+                    Comment comment = d.toObject(Comment.class);
+                    comments.add(comment);
+                }
+                Collections.sort(comments);
+                Collections.reverse(comments);
+                post.setComments(comments);
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+            Fragment viewPostFragment = new ViewPostFragment(post);
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                    .addToBackStack(null)
+                    .replace(R.id.flFragment, viewPostFragment)
+                    .commit();
+        });
     }
 
     private void setProfilePictureImageView(View view, String uid) {

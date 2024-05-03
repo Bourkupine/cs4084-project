@@ -136,13 +136,14 @@
             android:textStyle="bold" />
     </GridLayout>
 
-    <com.google.android.material.textfield.TextInputEditText
+    <EditText
         android:id="@+id/post_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:fontFamily="@font/open_sans"
         android:hint="@string/post_a_comment"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:maxLength="32"
         android:padding="10dp"

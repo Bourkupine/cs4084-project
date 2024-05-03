@@ -132,6 +132,10 @@ public class Post implements Comparable<Post> {
         return comments;
     }
 
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
+
     public void addComment(Comment comment) {
         comments.add(comment);
     }
