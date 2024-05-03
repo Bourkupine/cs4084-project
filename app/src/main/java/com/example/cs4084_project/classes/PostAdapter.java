@@ -3,6 +3,7 @@ package com.example.cs4084_project.classes;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +74,7 @@ public class PostAdapter extends BaseAdapter {
         View view = li.inflate(R.layout.listitem_post, null);
         Post post = posts.get(position);
 
-        if (post.getProfilePicturePath() != null) {
+        if (!TextUtils.isEmpty(post.getProfilePicturePath())) {
             ImageView profilePicture = view.findViewById(R.id.poster_profile_picture);
             Picasso.get().load(post.getProfilePicturePath()).into(profilePicture);
         }
