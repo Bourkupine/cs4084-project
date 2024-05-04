@@ -29,6 +29,8 @@ import com.example.cs4084_project.classes.Post;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
@@ -143,19 +145,18 @@ public class ViewPostFragment extends Fragment {
                     if (task.isSuccessful()) {
                         if (!TextUtils.isEmpty(post.getImagePath())) {
                             FirebaseStorage storage = FirebaseStorage.getInstance();
-                            storage.getReference().child("post-images").child(post.getPostId()).delete().addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful()) {
-                                    Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
-                                    navigateToHomeFragment();
-                                } else {
-                                    Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "Error deleting storage item: ", task1.getException());
+                            storage.getReference().child("post-images").child(post.getPostId()).delete();
+                        }
+                        if (!post.getComments().isEmpty()) {
+                            db.collection("posts").document(post.getPostId()).collection("comments").get().addOnSuccessListener(queryDocumentSnapshots -> {
+                                for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    DocumentReference commentRef = snapshot.getReference();
+                                    commentRef.delete();
                                 }
                             });
-                        } else {
-                            Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
-                            navigateToHomeFragment();
                         }
+                        Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                        navigateToHomeFragment();
                     } else {
                         Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Error deleting document: ", task.getException());
