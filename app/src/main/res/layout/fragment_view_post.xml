@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/primary"
     android:orientation="vertical"
     tools:context=".ViewPostFragment">
 
@@ -136,20 +136,43 @@
             android:textStyle="bold" />
     </GridLayout>
 
-    <EditText
-        android:id="@+id/post_comment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
-        android:fontFamily="@font/open_sans"
-        android:hint="@string/post_a_comment"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLength="32"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white_semi_transparent"
-        android:textSize="15sp" />
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/post_comment"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/post_a_comment"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLength="64"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white_semi_transparent"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/post_comment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/accent2"
+            android:text="@string/post"
+            android:textColor="@color/primary" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="360dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@color/accent2" />
 
     <ListView
         android:id="@+id/comments"

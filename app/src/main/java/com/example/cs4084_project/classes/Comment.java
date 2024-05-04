@@ -8,8 +8,13 @@ public class Comment implements Comparable<Comment> {
     private String message;
     private Timestamp date;
 
-    Comment() {}
+    public Comment() {}
 
+    public Comment(String commenterId, String message, Timestamp date) {
+        this.commenterId = commenterId;
+        this.message = message;
+        this.date = date;
+    }
 
     public String getCommenterId() {
         return commenterId;

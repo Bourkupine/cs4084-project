@@ -3,6 +3,7 @@ package com.example.cs4084_project.classes;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Post implements Comparable<Post> {
 
@@ -134,9 +135,16 @@ public class Post implements Comparable<Post> {
 
     public void setComments(ArrayList<Comment> comments) {
         this.comments = comments;
+        orderComments();
     }
 
     public void addComment(Comment comment) {
         comments.add(comment);
+        orderComments();
+    }
+
+    private void orderComments() {
+        Collections.sort(comments);
+        Collections.reverse(comments);
     }
 }

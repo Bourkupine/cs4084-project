@@ -85,8 +85,6 @@ public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
                     Comment comment = d.toObject(Comment.class);
                     comments.add(comment);
                 }
-                Collections.sort(comments);
-                Collections.reverse(comments);
                 post.setComments(comments);
             } else {
                 Log.d(TAG, "get failed with ", task.getException());

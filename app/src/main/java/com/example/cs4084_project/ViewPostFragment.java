@@ -1,31 +1,49 @@
 package com.example.cs4084_project;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cs4084_project.classes.Comment;
 import com.example.cs4084_project.classes.CommentAdapter;
 import com.example.cs4084_project.classes.Post;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
 
 public class ViewPostFragment extends Fragment {
 
     private final Post post;
+    private FirebaseUser user;
+    private FirebaseFirestore db;
+    private CommentAdapter adapter;
+    private EditText commentEditText;
 
     public ViewPostFragment(Post post) {
         this.post = post;
@@ -36,7 +54,8 @@ public class ViewPostFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_view_post, container, false);
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        user = auth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
 
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
@@ -56,8 +75,12 @@ public class ViewPostFragment extends Fragment {
 
         setPostInformation(rootView);
 
+        commentEditText = rootView.findViewById(R.id.post_comment);
+        Button postCommentButton = rootView.findViewById(R.id.post_comment_button);
+        postCommentButton.setOnClickListener(v -> postComment(String.valueOf(commentEditText.getText())));
+
         ListView commentsListView = rootView.findViewById(R.id.comments);
-        CommentAdapter adapter = new CommentAdapter(this.requireContext(), post.getComments());
+        adapter = new CommentAdapter(this.requireContext(), post.getComments());
         commentsListView.setAdapter(adapter);
 
         return rootView;
@@ -111,5 +134,31 @@ public class ViewPostFragment extends Fragment {
         } else {
             grid.removeView(cafe);
         }
+    }
+
+    private void postComment(String message) {
+        if (TextUtils.isEmpty(message)) {
+            Toast.makeText(requireContext(), "Please type a comment to post", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Comment comment = new Comment(user.getUid(), message, Timestamp.now());
+        HashMap<String, Object> commentMap = new HashMap<>();
+        commentMap.put("commenterId", comment.getCommenterId());
+        commentMap.put("message", comment.getMessage());
+        commentMap.put("date", comment.getDate());
+        db.collection("posts").document(post.getPostId()).collection("comments").add(commentMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    commentEditText.setText("");
+                    post.addComment(comment);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(requireContext(), "Error posting comment, please try again", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Error adding document: ", task.getException());
+                }
+            }
+        });
     }
 }
