@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +66,6 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
     ImageView fiveStarButton;
     int rating = 0;
     ProgressBar progressBar;
-    int numberOfPosts;
     boolean hasImage = false;
 
     public CreatePostFragment() {
@@ -79,7 +79,6 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
         user = auth.getCurrentUser();
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
-        db.collection("posts").get().addOnCompleteListener(task -> numberOfPosts = task.getResult().size());
 
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
@@ -206,7 +205,7 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
             return;
         }
 
-        String docRef = Integer.toString(numberOfPosts+1);
+        String docRef = UUID.randomUUID().toString();
         postId = docRef;
         posterId = user.getUid();
         Timestamp date = Timestamp.now();
