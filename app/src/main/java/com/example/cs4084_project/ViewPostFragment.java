@@ -30,6 +30,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -140,8 +141,21 @@ public class ViewPostFragment extends Fragment {
         builder.setMessage("Are you sure you want to delete this post?")
                 .setPositiveButton("Confirm", (dialog, id) -> db.collection("posts").document(post.getPostId()).delete().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
-                        navigateToHomeFragment();
+                        if (!TextUtils.isEmpty(post.getImagePath())) {
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            storage.getReference().child("post-images").child(post.getPostId()).delete().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                                    navigateToHomeFragment();
+                                } else {
+                                    Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "Error deleting storage item: ", task1.getException());
+                                }
+                            });
+                        } else {
+                            Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                            navigateToHomeFragment();
+                        }
                     } else {
                         Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Error deleting document: ", task.getException());
