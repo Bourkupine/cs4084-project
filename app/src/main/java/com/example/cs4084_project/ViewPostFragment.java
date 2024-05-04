@@ -67,7 +67,7 @@ public class ViewPostFragment extends Fragment {
         if (user.getUid().equals(post.getPosterId())) {
             ImageView editButton = rootView.findViewById(R.id.edit_button);
             editButton.setVisibility(View.VISIBLE);
-
+            editButton.setOnClickListener(v -> openCreatePostFragment());
             ImageView deleteButton = rootView.findViewById(R.id.delete_button);
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(v -> openDeletePostDialog());
@@ -165,6 +165,16 @@ public class ViewPostFragment extends Fragment {
 
         AlertDialog confirmationDialog = builder.create();
         confirmationDialog.show();
+    }
+
+    private void openCreatePostFragment() {
+        Fragment createPostFragment = new CreatePostFragment(post);
+        FragmentManager fm = getParentFragmentManager();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .addToBackStack(post.getPostId())
+                .replace(R.id.flFragment, createPostFragment)
+                .commit();
     }
 
     private void postComment(String message) {

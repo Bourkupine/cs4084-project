@@ -29,6 +29,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cs4084_project.classes.Cafe;
+import com.example.cs4084_project.classes.Post;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +39,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,8 +70,15 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
     int rating = 0;
     ProgressBar progressBar;
     boolean hasImage = false;
+    Post post;
+    boolean isEditingPost = false;
 
     public CreatePostFragment() {
+    }
+
+    public CreatePostFragment(Post post) {
+        this.post = post;
+        isEditingPost = true;
     }
 
     @Override
@@ -87,8 +97,13 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
         }
 
         Button backButton = rootView.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> navigateToHomeFragment());
+        if (isEditingPost) {
+            backButton.setOnClickListener(v -> navigateToPostFragment(post));
+        } else {
+            backButton.setOnClickListener(v -> navigateToHomeFragment());
+        }
 
+        TextView headingTextView = rootView.findViewById(R.id.heading);
         titleTextEdit = rootView.findViewById(R.id.post_title);
         descriptionTextEdit = rootView.findViewById(R.id.post_description);
 
@@ -114,6 +129,24 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
         Button createPostButton = rootView.findViewById(R.id.create_post_button);
         createPostButton.setOnClickListener(v -> createPost());
 
+        if (isEditingPost) {
+            headingTextView.setText(R.string.edit_post);
+            titleTextEdit.setText(post.getTitle());
+            descriptionTextEdit.setText(post.getDescription());
+            if (!TextUtils.isEmpty(post.getImagePath())) {
+                hasImage = true;
+                Picasso.get().load(post.getImagePath()).into(imagePreview);
+            }
+            if (post.getCafe() != null) {
+                Cafe postCafe = post.getCafe();
+                cafeName = postCafe.getName();
+                cafeLocation = postCafe.getLocation();
+                cafe.setText(String.format("%s, %s", cafeName, cafeLocation));
+                setStars(post.getRating());
+            }
+            createPostButton.setText(R.string.edit_post);
+        }
+
         return rootView;
     }
 
@@ -129,6 +162,16 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
         fm.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
                 .replace(R.id.flFragment, homeFragment)
+                .commit();
+    }
+
+    private void navigateToPostFragment(Post postToDisplay) {
+        Fragment viewPostFragment = new ViewPostFragment(postToDisplay);
+        FragmentManager fm = getParentFragmentManager();
+        fm.popBackStack();
+        fm.beginTransaction()
+                .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
+                .replace(R.id.flFragment, viewPostFragment)
                 .commit();
     }
 
@@ -205,10 +248,14 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
             return;
         }
 
-        String docRef = UUID.randomUUID().toString();
+        if (isEditingPost && !TextUtils.isEmpty(post.getImagePath())) {
+            storage.getReference().child("post-images").child(post.getPostId()).delete();
+        }
+
+        String docRef = isEditingPost ? post.getPostId() : UUID.randomUUID().toString();
         postId = docRef;
         posterId = user.getUid();
-        Timestamp date = Timestamp.now();
+        Timestamp date = isEditingPost ? post.getDate() : Timestamp.now();
         HashMap<String, Object> postMap = new HashMap<>();
 
         if (hasImage) {
@@ -305,7 +352,13 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
         db.collection("posts").document(postId).set(postMap).addOnCompleteListener(task -> {
             progressBar.setVisibility(View.GONE);
             if (task.isSuccessful()) {
-                navigateToHomeFragment();
+                if (isEditingPost) {
+                    Toast.makeText(requireContext(), "Post edited successfully!", Toast.LENGTH_SHORT).show();
+                    db.collection("posts").document(post.getPostId()).get().addOnSuccessListener(documentSnapshot -> navigateToPostFragment(documentSnapshot.toObject(Post.class)));
+                } else {
+                    Toast.makeText(requireContext(), "Post created successfully!", Toast.LENGTH_SHORT).show();
+                    navigateToHomeFragment();
+                }
             } else {
                 Toast.makeText(getActivity(), "Error creating post, please try again", Toast.LENGTH_SHORT).show();
             }
