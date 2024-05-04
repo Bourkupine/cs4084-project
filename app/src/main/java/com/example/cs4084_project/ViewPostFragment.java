@@ -2,10 +2,10 @@ package com.example.cs4084_project;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -26,12 +26,9 @@ import android.widget.Toast;
 import com.example.cs4084_project.classes.Comment;
 import com.example.cs4084_project.classes.CommentAdapter;
 import com.example.cs4084_project.classes.Post;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -66,11 +63,13 @@ public class ViewPostFragment extends Fragment {
         Button backButton = rootView.findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> navigateToHomeFragment());
 
-        ImageView editButton = rootView.findViewById(R.id.edit_button);
-        ImageView deleteButton = rootView.findViewById(R.id.delete_button);
         if (user.getUid().equals(post.getPosterId())) {
+            ImageView editButton = rootView.findViewById(R.id.edit_button);
             editButton.setVisibility(View.VISIBLE);
+
+            ImageView deleteButton = rootView.findViewById(R.id.delete_button);
             deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(v -> openDeletePostDialog());
         }
 
         setPostInformation(rootView);
@@ -136,6 +135,24 @@ public class ViewPostFragment extends Fragment {
         }
     }
 
+    private void openDeletePostDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Are you sure you want to delete this post?")
+                .setPositiveButton("Confirm", (dialog, id) -> db.collection("posts").document(post.getPostId()).delete().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                        navigateToHomeFragment();
+                    } else {
+                        Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Error deleting document: ", task.getException());
+                    }
+                }))
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog confirmationDialog = builder.create();
+        confirmationDialog.show();
+    }
+
     private void postComment(String message) {
         if (TextUtils.isEmpty(message)) {
             Toast.makeText(requireContext(), "Please type a comment to post", Toast.LENGTH_SHORT).show();
@@ -147,17 +164,14 @@ public class ViewPostFragment extends Fragment {
         commentMap.put("commenterId", comment.getCommenterId());
         commentMap.put("message", comment.getMessage());
         commentMap.put("date", comment.getDate());
-        db.collection("posts").document(post.getPostId()).collection("comments").add(commentMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    commentEditText.setText("");
-                    post.addComment(comment);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(requireContext(), "Error posting comment, please try again", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "Error adding document: ", task.getException());
-                }
+        db.collection("posts").document(post.getPostId()).collection("comments").add(commentMap).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                commentEditText.setText("");
+                post.addComment(comment);
+                adapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(requireContext(), "Error posting comment, please try again", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Error adding document: ", task.getException());
             }
         });
     }
