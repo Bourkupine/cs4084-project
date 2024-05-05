@@ -18,7 +18,7 @@
     <string name="create_post">Create Post</string>
     <string name="enter_user_name">Enter User Name</string>
     <string name="username">username</string>
-    <string name="post_count">Post: 0</string>
+    <string name="post_count">Posts: </string>
     <string name="friends_count">Friends: 0</string>
     <string name="post_title">Post Title</string>
     <string name="post_description">Post Description</string>

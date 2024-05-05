@@ -44,9 +44,12 @@ public class ViewPostFragment extends Fragment {
     private FirebaseFirestore db;
     private CommentAdapter adapter;
     private EditText commentEditText;
+    Fragment previousFragment;
 
-    public ViewPostFragment(Post post) {
+
+    public ViewPostFragment(Post post, Fragment previousFragment) {
         this.post = post;
+        this.previousFragment = previousFragment;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class ViewPostFragment extends Fragment {
         }
 
         Button backButton = rootView.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> navigateToHomeFragment());
+        backButton.setOnClickListener(v -> navigateToPreviousFragment());
 
         if (user.getUid().equals(post.getPosterId())) {
             ImageView editButton = rootView.findViewById(R.id.edit_button);
@@ -88,13 +91,12 @@ public class ViewPostFragment extends Fragment {
         return rootView;
     }
 
-    private void navigateToHomeFragment() {
-        Fragment homeFragment = new HomeFragment();
+    private void navigateToPreviousFragment() {
         FragmentManager fm = getParentFragmentManager();
         fm.popBackStack();
         fm.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
-                .replace(R.id.flFragment, homeFragment)
+                .replace(R.id.flFragment, previousFragment)
                 .commit();
     }
 
@@ -156,7 +158,7 @@ public class ViewPostFragment extends Fragment {
                             });
                         }
                         Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
-                        navigateToHomeFragment();
+                        navigateToPreviousFragment();
                     } else {
                         Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Error deleting document: ", task.getException());
