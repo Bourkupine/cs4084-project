@@ -34,6 +34,7 @@ public class AccountFragment extends Fragment {
     FirebaseFirestore db;
     Button signOutButton;
     ArrayList<String> friends_list = new ArrayList<>();
+    ArrayList<String> post_list = new ArrayList<>();
 
     public AccountFragment() {
     }
@@ -86,6 +87,7 @@ public class AccountFragment extends Fragment {
                     String profilePic = task.getResult().getString("profilePicture");
                     String name = task.getResult().getString("username");
                     int friend_list_size = 0;
+                    int post_list_size = getPostCount(task.getResult().getString("uid"));
 
                     username.setText(name);
                     if (profilePic != null) {
@@ -96,16 +98,25 @@ public class AccountFragment extends Fragment {
                     ArrayList<String> friends = (ArrayList<String>) task.getResult().get("friends");
 
                     if (friends != null) {
-                        int size = friends.size();
                         friends_list.addAll(friends);
                         friend_list_size = friends.size();
                     }
                     String friend_string = "Friends: " + friend_list_size;
+                    String post_string = "Posts: " + post_list_size;
                     friend_count.setText(friend_string);
+                    post_count.setText(post_string);
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
                 }
             }
         });
+    }
+
+    private int getPostCount(String uid) {
+
+        int post_count = 0;
+
+        return post_count;
+
     }
 }
