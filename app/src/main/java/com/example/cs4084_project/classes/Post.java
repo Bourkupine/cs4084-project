@@ -2,6 +2,9 @@ package com.example.cs4084_project.classes;
 
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Post implements Comparable<Post> {
 
     private String postId;
@@ -17,6 +20,7 @@ public class Post implements Comparable<Post> {
     private int rating;
     private int likes;
     private int dislikes;
+    private ArrayList<Comment> comments = new ArrayList<>();
 
     public Post() {}
 
@@ -123,5 +127,24 @@ public class Post implements Comparable<Post> {
 
     public String getCafeId() {
         return cafeId;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+        orderComments();
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        orderComments();
+    }
+
+    private void orderComments() {
+        Collections.sort(comments);
+        Collections.reverse(comments);
     }
 }

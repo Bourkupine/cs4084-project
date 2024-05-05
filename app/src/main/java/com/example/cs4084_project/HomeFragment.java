@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.cs4084_project.classes.Cafe;
+import com.example.cs4084_project.classes.Comment;
 import com.example.cs4084_project.classes.Post;
 import com.example.cs4084_project.classes.PostAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +34,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
 
     private FirebaseFirestore db;
     private ArrayList<Post> allPosts = new ArrayList<>();
@@ -68,10 +69,33 @@ public class HomeFragment extends Fragment {
         this.getAllPosts();
         this.setProfilePictureImageView(rootView, user.getUid());
         ListView postsListView = rootView.findViewById(R.id.posts);
-        adapter = new PostAdapter(this.getContext(), allPosts);
+        adapter = new PostAdapter(this.getContext(), allPosts, this);
         postsListView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void openPost(Post post) {
+        db.collection("posts").document(post.getPostId()).collection("comments").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();
+                ArrayList<Comment> comments = new ArrayList<>();
+                for (DocumentSnapshot d : queryDocumentSnapshots) {
+                    Comment comment = d.toObject(Comment.class);
+                    comments.add(comment);
+                }
+                post.setComments(comments);
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+            Fragment viewPostFragment = new ViewPostFragment(post);
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                    .addToBackStack(null)
+                    .replace(R.id.flFragment, viewPostFragment)
+                    .commit();
+        });
     }
 
     private void setProfilePictureImageView(View view, String uid) {

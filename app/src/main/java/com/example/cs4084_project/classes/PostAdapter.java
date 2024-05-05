@@ -3,6 +3,7 @@ package com.example.cs4084_project.classes;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
+import com.example.cs4084_project.CreatePostFragment;
 import com.example.cs4084_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,12 +39,18 @@ public class PostAdapter extends BaseAdapter {
     private final Context context;
     FirebaseFirestore db;
     FirebaseUser user;
+    OpenPost openPostListener;
 
     public PostAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
         this.db = FirebaseFirestore.getInstance();
         this.user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    public PostAdapter(Context context, List<Post> posts, OpenPost openPostListener) {
+        this(context, posts);
+        this.openPostListener = openPostListener;
     }
 
     @Override
@@ -65,7 +74,7 @@ public class PostAdapter extends BaseAdapter {
         View view = li.inflate(R.layout.listitem_post, null);
         Post post = posts.get(position);
 
-        if (post.getProfilePicturePath() != null) {
+        if (!TextUtils.isEmpty(post.getProfilePicturePath())) {
             ImageView profilePicture = view.findViewById(R.id.poster_profile_picture);
             Picasso.get().load(post.getProfilePicturePath()).into(profilePicture);
         }
@@ -136,6 +145,7 @@ public class PostAdapter extends BaseAdapter {
 
         this.updatePostScore(view, post);
         this.setLikeDislikeListeners(view, post);
+        this.setCommentListener(view, post);
         return view;
     }
 
@@ -255,5 +265,14 @@ public class PostAdapter extends BaseAdapter {
         TextView postScore = view.findViewById(R.id.post_score);
         int score = post.getLikes() - post.getDislikes();
         postScore.setText(String.format(Locale.ENGLISH, "%d", score));
+    }
+
+    private void setCommentListener(View view, Post post) {
+        ImageView commentButton = view.findViewById(R.id.post_comment);
+        commentButton.setOnClickListener(v -> openPostListener.openPost(post));
+    }
+
+    public interface OpenPost {
+        void openPost(Post post);
     }
 }
