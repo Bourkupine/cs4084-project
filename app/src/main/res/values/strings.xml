@@ -20,4 +20,21 @@
     <string name="username">username</string>
     <string name="post_count">Post: 0</string>
     <string name="friends_count">Friends: 0</string>
+    <string name="post_title">Post Title</string>
+    <string name="post_description">Post Description</string>
+    <string name="select_image">Select Image</string>
+    <string name="image_preview">Image Preview</string>
+    <string name="cafe">Cafe</string>
+    <string name="star">star</string>
+    <string name="x">X</string>
+    <string name="enter_cafe_name">Enter Cafe Name</string>
+    <string name="enter_cafe_details">Enter Cafe Details</string>
+    <string name="enter_cafe_location">Enter Cafe Location</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="post_a_comment">Post a Comment</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+    <string name="post">Post</string>
+    <string name="edit_post">Edit Post</string>
 </resources>

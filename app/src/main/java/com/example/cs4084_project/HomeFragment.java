@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.example.cs4084_project.classes.Cafe;
+import com.example.cs4084_project.classes.Comment;
 import com.example.cs4084_project.classes.Post;
 import com.example.cs4084_project.classes.PostAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,12 +34,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
 
-    private FirebaseAuth auth;
-    private FirebaseUser user;
     private FirebaseFirestore db;
-    private ListView postsListView;
     private ArrayList<Post> allPosts = new ArrayList<>();
     private PostAdapter adapter;
 
@@ -47,8 +47,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
         if (user == null) {
@@ -57,13 +57,45 @@ public class HomeFragment extends Fragment {
             requireActivity().finish();
         }
 
+        Button createPostButton = rootView.findViewById(R.id.create_post);
+        createPostButton.setOnClickListener(v -> {
+            Fragment createPostFragment = new CreatePostFragment();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.fade_out)
+                    .addToBackStack(null)
+                    .replace(R.id.flFragment, createPostFragment)
+                    .commit();
+        });
         this.getAllPosts();
         this.setProfilePictureImageView(rootView, user.getUid());
-        postsListView = rootView.findViewById(R.id.posts);
-        adapter = new PostAdapter(this.getContext(), allPosts);
+        ListView postsListView = rootView.findViewById(R.id.posts);
+        adapter = new PostAdapter(this.getContext(), allPosts, this);
         postsListView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void openPost(Post post) {
+        db.collection("posts").document(post.getPostId()).collection("comments").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();
+                ArrayList<Comment> comments = new ArrayList<>();
+                for (DocumentSnapshot d : queryDocumentSnapshots) {
+                    Comment comment = d.toObject(Comment.class);
+                    comments.add(comment);
+                }
+                post.setComments(comments);
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+            Fragment viewPostFragment = new ViewPostFragment(post);
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                    .addToBackStack(null)
+                    .replace(R.id.flFragment, viewPostFragment)
+                    .commit();
+        });
     }
 
     private void setProfilePictureImageView(View view, String uid) {
@@ -103,10 +135,20 @@ public class HomeFragment extends Fragment {
                                                 post.setProfilePicturePath(profilePic);
                                             }
                                             post.setUsername(task.getResult().getString("username"));
-                                            allPosts.add(post);
-                                            Collections.sort(allPosts);
-                                            Collections.reverse(allPosts);
-                                            adapter.notifyDataSetChanged();
+                                            db.collection("cafes").document(post.getCafeId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    Cafe cafe = task.getResult().toObject(Cafe.class);
+                                                    if (cafe != null) {
+                                                        post.setCafe(cafe);
+                                                    }
+                                                    allPosts.add(post);
+                                                    Collections.sort(allPosts);
+                                                    Collections.reverse(allPosts);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            });
+
                                         } else {
                                             Log.d(TAG, "get failed with ", task.getException());
                                         }
