@@ -72,8 +72,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     Button btnRestaurant ;
     double latitude;
     double longitude;
-
-
     GoogleApiClient mGoogleApiClient;
     private int PROXIMITY_RADIUS = 10000;
     Location mLastLocation;
@@ -85,7 +83,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -95,11 +93,9 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             getActivity().finish();
+        } else {
+            Log.d("onCreate", "Google Play Services available.");
         }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-        }
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,6 +118,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
 
         return rootView;
     }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this.getContext())
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this.getContext())
@@ -130,11 +127,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 .build();
         mGoogleApiClient.connect();
     }
+
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this.getContext());
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(this, result,
                         0).show();
             }
@@ -142,8 +140,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         }
         return true;
     }
+
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public boolean checkLocationPermission(){
+
+    public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -151,10 +151,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) this.getContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
                 //Prompt the user once explanation has been shown
                 ActivityCompat.requestPermissions((Activity) this.getContext(),
@@ -173,6 +169,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             return true;
         }
     }
+
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
@@ -184,7 +181,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
-
 
 
     @Override
@@ -207,6 +203,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
 // Button on click Listener
         btnRestaurant.setOnClickListener(new View.OnClickListener() {
             String Cafe = "cafe";
+
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
@@ -219,11 +216,12 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 Log.d("onClick", url);
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(requireContext(),"Nearby Restaurants", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Nearby Restaurants", Toast.LENGTH_LONG).show();
             }
         });
 
     }
+
     private void getLastLoc(GoogleMap googleMap) {
         Task<Location> task;
         task = fusedLocationProviderClient.getLastLocation();
@@ -234,10 +232,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 if (location != null) {
                     currentLoc = location;
                     LatLng pos = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(pos)
-                            .title("Current Location"));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15f));
+                    googleMap.setMyLocationEnabled(true);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomBy(10f));
+                    Log.d("Moving Camera", "Trying");
                 }
             }
         });
@@ -258,24 +256,20 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        Log.d("onLocationChanged", "entered");
 
         mLastLocation = location;
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-        location = currentLoc;
         //Place current location marker
         latitude = location.getLatitude();
         longitude = location.getLongitude();
-        Log.d("Lat", "latitude");
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mCurrLocationMarker = googleMap.addMarker(markerOptions);
-        Log.d("Map","Trying to add marker");
 
         //move map camera
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
