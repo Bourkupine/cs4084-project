@@ -23,6 +23,7 @@ public class DownloadUrl {
 
             // Connecting to url
             urlConnection.connect();
+            Log.d("URL",urlConnection.toString());
 
             // Reading data from url
             iStream = urlConnection.getInputStream();

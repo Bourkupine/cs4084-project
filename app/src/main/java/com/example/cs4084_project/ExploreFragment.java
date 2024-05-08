@@ -73,6 +73,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     double latitude;
     double longitude;
 
+
     GoogleApiClient mGoogleApiClient;
     private int PROXIMITY_RADIUS = 10000;
     Location mLastLocation;
@@ -115,10 +116,10 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             requireActivity().finish();
         }
         btnRestaurant = (Button) rootView.findViewById(R.id.btnRestaurant);
-
         SupportMapFragment mapView = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
         mapView.getMapAsync((OnMapReadyCallback) this);
+
         return rootView;
     }
     protected synchronized void buildGoogleApiClient() {
@@ -179,7 +180,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyATuUiZUkEc_UgHuqsBJa1oqaODI-3mLs0");
+        googlePlacesUrl.append("&key=" + "AIzaSyA5qW1LJjoEIgi2lNX5uJKlBr2hiSXQMTY");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
@@ -198,19 +199,20 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
 
         } else {
+            // Allow map to be generated and display mGoogleMap
             getLastLoc(mGoogleMap);
         }
 
 
-
+// Button on click Listener
         btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String Restaurant = "restaurant";
+            String Cafe = "cafe";
             @Override
             public void onClick(View v) {
                 Log.d("onClick", "Button is Clicked");
                 mGoogleMap.clear();
 
-                String url = getUrl(latitude, longitude, Restaurant);
+                String url = getUrl(currentLoc.getLatitude(), currentLoc.getLongitude(), Cafe);
                 Object[] DataTransfer = new Object[2];
                 DataTransfer[0] = mGoogleMap;
                 DataTransfer[1] = url;
@@ -220,30 +222,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 Toast.makeText(requireContext(),"Nearby Restaurants", Toast.LENGTH_LONG).show();
             }
         });
-
-
-//
-//
-//        LatLng pos = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
-//
-//
-//        ArrayList<Object> locationArrayList = new ArrayList<>();
-//
-//        locationArrayList.add(pos);
-//        //locationArrayList.add(getallcafelocations())
-//        //locationArrayList.add(getallpostlocations())
-//        for (int i = 0; i < locationArrayList.size(); i++) {
-//
-//            // below line is use to add marker to each location of our array list.
-//            googleMap.addMarker(new MarkerOptions().position((LatLng) locationArrayList.get(i)).title("Marker"));
-//
-//            // below line is use to zoom our camera on map.
-//            googleMap.animateCamera(CameraUpdateFactory.zoomTo(18.0f));
-//
-//            // below line is use to move our camera to the specific location.
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
-//
-//        }
 
     }
     private void getLastLoc(GoogleMap googleMap) {
@@ -255,14 +233,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             public void onSuccess(Location location) {
                 if (location != null) {
                     currentLoc = location;
-//                    SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-//                    mapFragment.getMapAsync(ExploreFragment.this);
                     LatLng pos = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
                     googleMap.addMarker(new MarkerOptions()
                             .position(pos)
-                            .title("Marker in Sydney"));
-                    Log.d("Map","Trying to add marker");
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 5f));
+                            .title("Current Location"));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 15f));
                 }
             }
         });
@@ -289,10 +264,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
-
+        location = currentLoc;
         //Place current location marker
         latitude = location.getLatitude();
         longitude = location.getLongitude();
+        Log.d("Lat", "latitude");
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
