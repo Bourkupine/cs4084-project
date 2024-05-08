@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.cs4084_project"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -71,6 +71,8 @@ dependencies {
     implementation("com.github.Dwolla:dwolla-v2-kotlin:0.2.0")
 
         implementation("com.github.delight-im:Android-SimpleLocation:v1.1.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
 
 }
