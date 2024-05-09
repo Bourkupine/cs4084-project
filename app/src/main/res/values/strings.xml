@@ -37,4 +37,5 @@
     <string name="delete">delete</string>
     <string name="post">Post</string>
     <string name="edit_post">Edit Post</string>
+    <string name="remove_friend">Remove Friend</string>
 </resources>

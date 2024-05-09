@@ -94,50 +94,51 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
             android:fontFamily="@font/open_sans"
             android:gravity="center"
+            android:onClick="onClick"
             android:text="Posts"
             android:textSize="20sp" />
 
 
         <TextView
-            android:id="@+id/profile_favourites_button"
+            android:id="@+id/profile_friends_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clickable="true"
             android:fontFamily="@font/open_sans"
             android:gravity="center"
+            android:onClick="onClick"
             android:text="Friends"
             android:textSize="20sp" />
 
 
     </LinearLayout>
 
+
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="@color/primary" />
-
-    <ListView
-        android:id="@+id/posts"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:divider="@null" />
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/account" />
 
     <Button
         android:id="@+id/sign_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_out" />
+
+    <ListView
+        android:id="@+id/posts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:divider="@null" />
+
+
+
 
 </LinearLayout>
