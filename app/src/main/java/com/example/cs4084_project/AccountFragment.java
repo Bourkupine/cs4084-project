@@ -177,8 +177,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
                             friend_count.setText(outputFriendString);
 
                             adapter_friends.notifyDataSetChanged();
-
-                            Log.d("Firestore", "Friend added: " + f.getUsername());
                         }
                     } else {
                         Log.e("Firestore", "Error fetching friends: " + task.getException());
@@ -215,7 +213,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
                                             Collections.sort(post_list);
                                             Collections.reverse(post_list);
                                             adapter_post.notifyDataSetChanged();
-                                            Log.d("Firestore", "post added: " + post.getPostId());
                                         });
 
                                     } else {
