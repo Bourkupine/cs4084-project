@@ -1,13 +1,8 @@
 package com.example.cs4084_project;
 
-import static android.content.Intent.getIntent;
-import static com.google.android.libraries.mapsplatform.transportation.consumer.model.Location.*;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 
 import com.google.android.gms.location.LocationListener;
 
@@ -27,18 +22,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.Manifest;
 import android.widget.Button;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.Priority;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -50,13 +41,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.api.Context;
-import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 import im.delight.android.location.SimpleLocation;
 
@@ -69,7 +55,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     Location currentLoc;
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap googleMap;
-    Button btnRestaurant ;
+    Button btnCafe;
     double latitude;
     double longitude;
     GoogleApiClient mGoogleApiClient;
@@ -110,7 +96,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             startActivity(intent);
             requireActivity().finish();
         }
-        btnRestaurant = (Button) rootView.findViewById(R.id.btnRestaurant);
+        btnCafe = (Button) rootView.findViewById(R.id.btnCafe);
         SupportMapFragment mapView = (SupportMapFragment)
                 getChildFragmentManager().findFragmentById(R.id.map);
         mapView.getMapAsync((OnMapReadyCallback) this);
@@ -211,7 +197,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         });
 
 // Button on click Listener
-        btnRestaurant.setOnClickListener(new View.OnClickListener() {
+        btnCafe.setOnClickListener(new View.OnClickListener() {
             String Cafe = "cafe";
             @Override
             public void onClick(View v) {
@@ -223,7 +209,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 DataTransfer[1] = url;
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(requireContext(), "Nearby Restaurants", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), "Displaying Nearby Cafes", Toast.LENGTH_LONG).show();
             }
         });
 

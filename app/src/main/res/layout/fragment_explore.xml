@@ -25,10 +25,10 @@
         android:orientation="vertical">
 
     <Button
-        android:id="@+id/btnRestaurant"
+        android:id="@+id/btnCafe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nearby Restaurants" />
+        android:text="@string/nearby_cafes" />
     </LinearLayout>
 
 </RelativeLayout>
