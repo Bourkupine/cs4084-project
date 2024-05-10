@@ -4,7 +4,9 @@ import static com.example.cs4084_project.classes.Utils.validatePassword;
 import static com.example.cs4084_project.classes.Utils.validateUsername;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class EditProfileFragment extends Fragment {
 
@@ -57,8 +62,15 @@ public class EditProfileFragment extends Fragment {
                 StorageReference storage = FirebaseStorage.getInstance()
                                                           .getReference();
                 StorageReference pfp = storage.child("profile_pictures/" + uid + ".jpg");
-
-                pfp.putFile(uri)
+                Bitmap bitmap;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), uri);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                pfp.putBytes(baos.toByteArray())
                    .addOnSuccessListener(task -> {
                        makeToast("New profile picture uploaded successfully");
                        pfp.getDownloadUrl()
