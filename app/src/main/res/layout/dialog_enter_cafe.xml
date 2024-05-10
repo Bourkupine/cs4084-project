@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/accent"
+    android:orientation="vertical"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@color/primary"
+        android:fontFamily="@font/open_sans"
+        android:padding="10dp"
+        android:text="@string/enter_cafe_details"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/cafe_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:fontFamily="@font/open_sans"
+        android:hint="@string/enter_cafe_name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textColorHint="@color/black_semi_transparent"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/cafe_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:fontFamily="@font/open_sans"
+        android:hint="@string/enter_cafe_location"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textColorHint="@color/black_semi_transparent"
+        android:textSize="16sp" />
+
+</LinearLayout>

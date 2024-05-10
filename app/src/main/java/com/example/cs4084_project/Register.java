@@ -1,6 +1,9 @@
 package com.example.cs4084_project;
 
 import static android.content.ContentValues.TAG;
+import static com.example.cs4084_project.classes.Utils.validateEmail;
+import static com.example.cs4084_project.classes.Utils.validatePassword;
+import static com.example.cs4084_project.classes.Utils.validateUsername;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,17 +31,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Objects;
 
 public class Register extends AppCompatActivity {
 
-    TextInputEditText editTextEmail, editTextFirstName, editTextLastName, editTextPassword, editTextConfirmPassword;
+    TextInputEditText editTextEmail, editTextUsername, editTextPassword, editTextConfirmPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -69,8 +71,7 @@ public class Register extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.email);
-        editTextFirstName = findViewById(R.id.first_name);
-        editTextLastName = findViewById(R.id.last_name);
+        editTextUsername = findViewById(R.id.username);
         editTextPassword = findViewById(R.id.password);
         editTextConfirmPassword = findViewById(R.id.confirm_password);
         buttonReg = findViewById(R.id.btn_register);
@@ -89,10 +90,9 @@ public class Register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressBar.setVisibility(View.VISIBLE);
-                String email, firstName, lastName, password, confirmPassword;
+                String email, username, password, confirmPassword;
                 email = String.valueOf(editTextEmail.getText());
-                firstName = String.valueOf(editTextFirstName.getText());
-                lastName = String.valueOf(editTextLastName.getText());
+                username = String.valueOf(editTextUsername.getText());
                 password = String.valueOf(editTextPassword.getText());
                 confirmPassword = String.valueOf(editTextConfirmPassword.getText());
 
@@ -105,22 +105,13 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(Register.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (TextUtils.isEmpty(firstName)) {
+                if (TextUtils.isEmpty(username)) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a first name", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!validateName(firstName)) {
+                } else if (!validateUsername(username)) {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(Register.this, "Please enter a valid first name between 2 and 32 characters", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(lastName)) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(Register.this, "Please enter a last name", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!validateName(lastName)) {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(Register.this, "Please enter a valid last name between 2 and 32 characters", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this, "Please enter a valid username between 2 and 32 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(password)) {
@@ -138,68 +129,42 @@ public class Register extends AppCompatActivity {
                     return;
                 }
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Map<String, Object> user = new HashMap<>();
-                user.put("email", email);
-                user.put("first_name", firstName);
-                user.put("last_name", lastName);
-                db.collection("users").add(user).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            mAuth.signInWithEmailAndPassword(email, password);
+                            String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("uid", uid);
+                            user.put("email", email);
+                            user.put("username", username);
+                            db.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(Register.this, "Account registered successfully!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
-                                } else {
-                                    Toast.makeText(Register.this, "Authentication failed, please try again", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Register.this, "Failed to create account, please try again", Toast.LENGTH_SHORT).show();
-                        Log.w(TAG, "Failed to create account!", e);
-                        progressBar.setVisibility(View.GONE);
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(Register.this, "Failed to create account, please try again", Toast.LENGTH_SHORT).show();
+                                    Log.w(TAG, "Failed to create account!", e);
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(Register.this, "Authentication failed, please try again", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
         });
-    }
-
-    private static boolean validateEmail(String email) {
-        Pattern pattern;
-        Matcher matcher;
-        final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        pattern = Pattern.compile(EMAIL_PATTERN);
-        matcher = pattern.matcher(email);
-
-        return matcher.matches();
-    }
-
-    private static boolean validatePassword(String password) {
-        Pattern pattern;
-        Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-
-        return matcher.matches();
-    }
-
-    private static boolean validateName(String name) {
-        Pattern pattern;
-        Matcher matcher;
-        final String NAME_PATTERN = "^[A-Za-z '-]{2,32}$";
-        pattern = Pattern.compile(NAME_PATTERN);
-        matcher = pattern.matcher(name);
-
-        return matcher.matches();
     }
 }

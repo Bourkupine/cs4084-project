@@ -9,10 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -46,20 +51,47 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        FragmentTransaction fr = fm.beginTransaction();
+        Fragment currentFragment = getVisibleFragment();
         int itemId = item.getItemId();
         if (itemId == R.id.home) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, homeFragment).commit();
+            fr.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+            fr.replace(R.id.flFragment, homeFragment).commit();
             return true;
         } else if (itemId == R.id.explore) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, exploreFragment).commit();
+            if (currentFragment instanceof HomeFragment) {
+                fr.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else {
+                fr.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+            fr.replace(R.id.flFragment, exploreFragment).commit();
             return true;
         } else if (itemId == R.id.coffee) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, coffeeFragment).commit();
+            if (currentFragment instanceof AccountFragment) {
+                fr.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+            } else {
+                fr.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+            fr.replace(R.id.flFragment, coffeeFragment).commit();
             return true;
         } else if (itemId == R.id.account) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.flFragment, accountFragment).commit();
+            fr.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+            fr.replace(R.id.flFragment, accountFragment).commit();
             return true;
         }
         return false;
+    }
+
+    private Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment f : fragments) {
+            if (f != null && f.isVisible()) {
+                return f;
+            }
+        }
+        return null;
     }
 }
