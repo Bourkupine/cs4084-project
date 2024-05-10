@@ -4,9 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.cs4084_project.classes.Cafe;
 import com.example.cs4084_project.classes.Comment;
@@ -61,6 +61,7 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         db = FirebaseFirestore.getInstance();
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
 
+        clear();
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
             startActivity(intent);
@@ -77,6 +78,17 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         adapter_post = new PostAdapter(requireContext(), post_list, this);
         adapter_friends = new FriendAdapter(requireContext(), friend_list, this);
         list.setAdapter(adapter_post);
+
+        rootView.findViewById(R.id.profile_options)
+                .setOnClickListener(v -> {
+                    Fragment editProfileFragment = new EditProfileFragment();
+                    FragmentManager fm = requireActivity().getSupportFragmentManager();
+                    fm.beginTransaction()
+                      .setReorderingAllowed(true)
+                      .addToBackStack(null)
+                      .replace(R.id.flFragment, editProfileFragment)
+                      .commit();
+                });
 
         setAdapterListeners(rootView, adapter_post, adapter_friends);
         return rootView;
@@ -95,6 +107,10 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     @Override
     public void onDestroy() {
         super.onDestroy();
+        clear();
+    }
+
+    private void clear() {
         post_list.clear();
         friend_list.clear();
         post_int_val = 0;
@@ -106,7 +122,8 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         TextView username = view.findViewById(R.id.profile_name);
         TextView friend_count = view.findViewById(R.id.profile_friends_count);
 
-        DocumentReference userDoc = db.collection("users").document(uid);
+        DocumentReference userDoc = db.collection("users")
+                                      .document(uid);
 
         userDoc.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -132,68 +149,77 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
 
     private void getUserFriends(String uid) {
         CollectionReference users = db.collection("users");
-        users.whereArrayContains("friends", uid).get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Friend f = new Friend();
-                            f.setUid(document.getString("uid"));
-                            f.setUsername(document.getString("username"));
-                            f.setProfilePic(document.getString("profilePicture"));
-                            friend_list.add(f);
-
+        users.whereArrayContains("friends", uid)
+             .get()
+             .addOnCompleteListener(task -> {
+                 if (task.isSuccessful()) {
+                     for (QueryDocumentSnapshot document : task.getResult()) {
+                         Friend f = new Friend();
+                         f.setUid(document.getString("uid"));
+                         f.setUsername(document.getString("username"));
+                         f.setProfilePic(document.getString("profilePicture"));
+                         friend_list.add(f);
                             String outputFriendString = "Friends: " + friend_list.size();
                             friend_count.setText(outputFriendString);
-
-                            adapter_friends.notifyDataSetChanged();
-                        }
-                    } else {
-                        Log.e("Firestore", "Error fetching friends: " + task.getException());
-                    }
-                });
+                         adapter_friends.notifyDataSetChanged();
+                     }
+                 } else {
+                     Log.e("Firestore", "Error fetching friends: " + task.getException());
+                 }
+             });
     }
 
     private void getUserPosts(String uid) {
 
         db.collection("posts")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Post post = document.toObject(Post.class);
-                            if (post.getPosterId().equals(uid)) {
-                                db.collection("users").document(post.getPosterId()).get().addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful()) {
-                                        String profilePic = task1.getResult().getString("profilePicture");
-                                        if (profilePic != null) {
-                                            post.setProfilePicturePath(profilePic);
-                                        }
-                                        post.setUsername(task1.getResult().getString("username"));
-                                        db.collection("cafes").document(post.getCafeId()).get().addOnCompleteListener(task11 -> {
-                                            Cafe cafe = task11.getResult().toObject(Cafe.class);
-                                            if (cafe != null) {
-                                                post.setCafe(cafe);
-                                            }
-                                            post_list.add(post);
-                                            post_int_val++;
-                                            String outputPostString = "Posts: " + post_int_val;
-                                            post_count.setText(outputPostString);
-
-                                            Collections.sort(post_list);
-                                            Collections.reverse(post_list);
-                                            adapter_post.notifyDataSetChanged();
-                                        });
-
-                                    } else {
-                                        Log.d(TAG, "get failed with ", task1.getException());
+          .get()
+          .addOnCompleteListener(task -> {
+              if (task.isSuccessful()) {
+                  for (QueryDocumentSnapshot document : task.getResult()) {
+                      Post post = document.toObject(Post.class);
+                      if (post.getPosterId()
+                              .equals(uid)) {
+                          db.collection("users")
+                            .document(post.getPosterId())
+                            .get()
+                            .addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    String profilePic = task1.getResult()
+                                                             .getString("profilePicture");
+                                    if (profilePic != null) {
+                                        post.setProfilePicturePath(profilePic);
                                     }
-                                });
-                            }
-                        }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
-                    }
-                });
+                                    post.setUsername(task1.getResult()
+                                                          .getString("username"));
+                                    db.collection("cafes")
+                                      .document(post.getCafeId())
+                                      .get()
+                                      .addOnCompleteListener(task11 -> {
+                                          Cafe cafe = task11.getResult()
+                                                            .toObject(Cafe.class);
+                                          if (cafe != null) {
+                                              post.setCafe(cafe);
+                                          }
+                                          post_list.add(post);
+                                          post_int_val++;
+                                          String outputPostString = "Posts: " + post_int_val;
+                                          post_count.setText(outputPostString);
+
+                                          Collections.sort(post_list);
+                                          Collections.reverse(post_list);
+                                          adapter_post.notifyDataSetChanged();
+                                      });
+
+                                } else {
+                                    Log.d(TAG, "get failed with ", task1.getException());
+                                }
+                            });
+                      }
+                  }
+              } else {
+                  Log.d(TAG, "Error getting documents: ", task.getException());
+              }
+          });
     }
 
 
@@ -201,25 +227,29 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     public void openPost(Post post) {
         post_list.clear();
         post_int_val = 0;
-        db.collection("posts").document(post.getPostId()).collection("comments").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot queryDocumentSnapshots = task.getResult();
-                ArrayList<Comment> comments = new ArrayList<>();
-                for (DocumentSnapshot d : queryDocumentSnapshots) {
-                    Comment comment = d.toObject(Comment.class);
-                    comments.add(comment);
-                }
-                post.setComments(comments);
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
-            }
-            Fragment viewPostFragment = new ViewPostFragment(post, this);
-            getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
-                    .addToBackStack(null)
-                    .replace(R.id.flFragment, viewPostFragment)
-                    .commit();
-        });
+        db.collection("posts")
+          .document(post.getPostId())
+          .collection("comments")
+          .get()
+          .addOnCompleteListener(task -> {
+              if (task.isSuccessful()) {
+                  QuerySnapshot queryDocumentSnapshots = task.getResult();
+                  ArrayList<Comment> comments = new ArrayList<>();
+                  for (DocumentSnapshot d : queryDocumentSnapshots) {
+                      Comment comment = d.toObject(Comment.class);
+                      comments.add(comment);
+                  }
+                  post.setComments(comments);
+              } else {
+                  Log.d(TAG, "get failed with ", task.getException());
+              }
+              Fragment viewPostFragment = new ViewPostFragment(post, this);
+              getParentFragmentManager().beginTransaction()
+                                        .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
+                                        .addToBackStack(null)
+                                        .replace(R.id.flFragment, viewPostFragment)
+                                        .commit();
+          });
     }
 
     @Override

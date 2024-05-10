@@ -2,6 +2,8 @@ package com.example.cs4084_project;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.cs4084_project.classes.Utils.compressImage;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.cs4084_project.classes.Cafe;
 import com.example.cs4084_project.classes.Post;
+import com.example.cs4084_project.classes.Utils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -262,10 +265,7 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
             imagePreview.setDrawingCacheEnabled(true);
             imagePreview.buildDrawingCache();
             Bitmap imageBitmap = ((BitmapDrawable) imagePreview.getDrawable()).getBitmap();
-            double ratio = 256.0 / imageBitmap.getWidth();
-            if (ratio < 1) {
-                imageBitmap = Bitmap.createScaledBitmap(imageBitmap, 256, (int) Math.floor(imageBitmap.getHeight() * ratio), true);
-            }
+            imageBitmap = compressImage(imageBitmap);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
