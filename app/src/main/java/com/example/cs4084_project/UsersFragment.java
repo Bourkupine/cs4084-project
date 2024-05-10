@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +14,19 @@ import android.widget.ListView;
 
 import com.example.cs4084_project.classes.Friend;
 import com.example.cs4084_project.classes.FriendAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend {
+public class UsersFragment extends Fragment implements FriendAdapter.OpenFriend {
 
     FirebaseAuth auth;
     FirebaseUser user;
@@ -30,13 +35,13 @@ public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend
     ListView list;
     FriendAdapter adapter_friends;
 
-    public CoffeeFragment() {
+    public UsersFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_coffee, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_users, container, false);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -90,13 +95,17 @@ public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend
 
     @Override
     public void removeFriend(String friendId) {
-
+        db.collection("users").document(user.getUid()).update("friends", FieldValue.arrayRemove(friendId));
+        db.collection("users").document(friendId).update("friends", FieldValue.arrayRemove(user.getUid()));
+        user_list.clear();
+        getAllUsers();
     }
     @Override
     public void addFriend(String friendId) {
-        //check if friend already exists
         db.collection("users").document(user.getUid()).update("friends", FieldValue.arrayUnion(friendId));
         db.collection("users").document(friendId).update("friends", FieldValue.arrayUnion(user.getUid()));
+        user_list.clear();
+        getAllUsers();
 
     }
 }
