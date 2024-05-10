@@ -15,6 +15,7 @@ import com.example.cs4084_project.classes.Friend;
 import com.example.cs4084_project.classes.FriendAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -40,6 +41,8 @@ public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
+        clear();
+
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
             startActivity(intent);
@@ -49,22 +52,35 @@ public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend
         getAllUsers();
 
         list = rootView.findViewById(R.id.userList);
-        adapter_friends = new FriendAdapter(requireContext(), user_list, this);
+        adapter_friends = new FriendAdapter(requireContext(), user_list, this, true);
         list.setAdapter(adapter_friends);
 
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clear();
+    }
+
+    private void clear() {
+        user_list.clear();
+    }
+
+
     void getAllUsers() {
         db.collection("users").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Friend f = new Friend();
-                    f.setUid(document.getString("uid"));
-                    f.setUsername(document.getString("username"));
-                    f.setProfilePic(document.getString("profilePicture"));
-                    user_list.add(f);
-                    adapter_friends.notifyDataSetChanged();
+                    if (!document.getString("uid").equals(user.getUid())) {
+                        Friend f = new Friend();
+                        f.setUid(document.getString("uid"));
+                        f.setUsername(document.getString("username"));
+                        f.setProfilePic(document.getString("profilePicture"));
+                        user_list.add(f);
+                        adapter_friends.notifyDataSetChanged();
+                    }
                 }
             } else {
                 Log.e("Firestore", "Error fetching friends: " + task.getException());
@@ -74,6 +90,13 @@ public class CoffeeFragment extends Fragment implements FriendAdapter.OpenFriend
 
     @Override
     public void removeFriend(String friendId) {
+
+    }
+    @Override
+    public void addFriend(String friendId) {
+        //check if friend already exists
+        db.collection("users").document(user.getUid()).update("friends", FieldValue.arrayUnion(friendId));
+        db.collection("users").document(friendId).update("friends", FieldValue.arrayUnion(user.getUid()));
 
     }
 }

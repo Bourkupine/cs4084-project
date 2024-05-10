@@ -23,6 +23,7 @@ public class FriendAdapter extends BaseAdapter {
     FirebaseFirestore db;
     FirebaseUser user;
     OpenFriend openFriendListener;
+    boolean addFriend;
 
     public FriendAdapter(Context context, List<Friend> friends) {
         this.friends = friends;
@@ -31,9 +32,10 @@ public class FriendAdapter extends BaseAdapter {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public FriendAdapter(Context context, List<Friend> friends, OpenFriend openFriendListener) {
+    public FriendAdapter(Context context, List<Friend> friends, OpenFriend openFriendListener, boolean addFriend) {
         this(context, friends);
         this.openFriendListener = openFriendListener;
+        this.addFriend = addFriend;
     }
 
     @Override
@@ -66,6 +68,10 @@ public class FriendAdapter extends BaseAdapter {
         } else {
             Picasso.get().load(friend.getProfilePic()).into(pfp);
         }
+        if (addFriend) {
+            ImageView button = view.findViewById(R.id.remove_friend);
+            button.setImageResource(R.drawable.ic_friends_add_foreground);
+        }
 
         this.setListeners(view, friend);
 
@@ -76,11 +82,17 @@ public class FriendAdapter extends BaseAdapter {
     private void setListeners(View view, Friend friend) {
         ImageView remove = view.findViewById(R.id.remove_friend);
 
-        remove.setOnClickListener(v -> openFriendListener.removeFriend(friend.getUid()));
+        if (addFriend) {
+            remove.setOnClickListener(v -> openFriendListener.addFriend(friend.getUid()));
+        } else {
+            remove.setOnClickListener(v -> openFriendListener.removeFriend(friend.getUid()));
+        }
     }
 
     public interface OpenFriend {
         void removeFriend(String friendId);
+
+        void addFriend(String friendId);
     }
 
 }
