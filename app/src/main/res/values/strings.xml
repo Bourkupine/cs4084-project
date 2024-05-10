@@ -50,5 +50,6 @@
     <string name="current_password_text">Enter current password</string>
     <string name="new_password_text">Enter new password</string>
     <string name="new_password_confirm_text">Confirm new password</string>
+    <string name="users">Users</string>
     <string name="nearby_cafes">Nearby Cafes</string>
 </resources>

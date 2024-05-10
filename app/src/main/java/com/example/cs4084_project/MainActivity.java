@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     HomeFragment homeFragment = new HomeFragment();
     ExploreFragment exploreFragment = new ExploreFragment();
-    CoffeeFragment coffeeFragment = new CoffeeFragment();
+    UsersFragment usersFragment = new UsersFragment();
     AccountFragment accountFragment = new AccountFragment();
 
     @Override
@@ -68,13 +68,13 @@ public class MainActivity extends AppCompatActivity
             }
             fr.replace(R.id.flFragment, exploreFragment).commit();
             return true;
-        } else if (itemId == R.id.coffee) {
+        } else if (itemId == R.id.users_nav) {
             if (currentFragment instanceof AccountFragment) {
                 fr.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
             } else {
                 fr.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
             }
-            fr.replace(R.id.flFragment, coffeeFragment).commit();
+            fr.replace(R.id.flFragment, usersFragment).commit();
             return true;
         } else if (itemId == R.id.account) {
             fr.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);

@@ -76,7 +76,7 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
 
         list = rootView.findViewById(R.id.posts);
         adapter_post = new PostAdapter(requireContext(), post_list, this);
-        adapter_friends = new FriendAdapter(requireContext(), friend_list, this);
+        adapter_friends = new FriendAdapter(requireContext(), friend_list, this, false);
         list.setAdapter(adapter_post);
 
         rootView.findViewById(R.id.profile_options)
@@ -258,9 +258,13 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         db.collection("users").document(friendId).update("friends", FieldValue.arrayRemove(user.getUid()));
         friend_list.clear();
         getUserFriends(user.getUid());
-        adapter_friends = new FriendAdapter(requireContext(), friend_list, this);
+        adapter_friends = new FriendAdapter(requireContext(), friend_list, this, false);
         list.setAdapter(adapter_friends);
 
         friend_count.setText("Friends: " + friend_list.size());
+    }
+    @Override
+    public void addFriend(String friendId) {
+
     }
 }
