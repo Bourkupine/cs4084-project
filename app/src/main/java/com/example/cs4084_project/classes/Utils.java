@@ -1,5 +1,7 @@
 package com.example.cs4084_project.classes;
 
+import android.graphics.Bitmap;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,5 +35,13 @@ public class Utils {
         matcher = pattern.matcher(password);
 
         return matcher.matches();
+    }
+
+    public static Bitmap compressImage(Bitmap bitmapImage) {
+        double ratio = 256.0 / bitmapImage.getWidth();
+        if (ratio < 1) {
+            bitmapImage = Bitmap.createScaledBitmap(bitmapImage, 256, (int) Math.floor(bitmapImage.getHeight() * ratio), true);
+        }
+        return bitmapImage;
     }
 }

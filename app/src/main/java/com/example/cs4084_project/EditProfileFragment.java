@@ -1,5 +1,6 @@
 package com.example.cs4084_project;
 
+import static com.example.cs4084_project.classes.Utils.compressImage;
 import static com.example.cs4084_project.classes.Utils.validatePassword;
 import static com.example.cs4084_project.classes.Utils.validateUsername;
 
@@ -68,6 +69,7 @@ public class EditProfileFragment extends Fragment {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                bitmap = compressImage(bitmap);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 pfp.putBytes(baos.toByteArray())
