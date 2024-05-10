@@ -8,12 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -23,13 +21,12 @@ import com.example.cs4084_project.classes.Friend;
 import com.example.cs4084_project.classes.FriendAdapter;
 import com.example.cs4084_project.classes.Post;
 import com.example.cs4084_project.classes.PostAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,14 +40,12 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     FirebaseAuth auth;
     FirebaseUser user;
     FirebaseFirestore db;
-    Button signOutButton;
     ArrayList<Friend> friend_list = new ArrayList<>();
     ArrayList<Post> post_list = new ArrayList<>();
     ListView list;
     PostAdapter adapter_post;
     FriendAdapter adapter_friends;
     private int post_int_val = 0;
-    private int friend_int_val = 0;
     TextView post_count;
     TextView friend_count;
 
@@ -65,7 +60,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
-        signOutButton = rootView.findViewById(R.id.sign_out);
 
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
@@ -78,7 +72,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         fillUserInfo(rootView, user.getUid());
         friend_count = rootView.findViewById(R.id.profile_friends_count);
         post_count = rootView.findViewById(R.id.profile_post_count);
-
 
         list = rootView.findViewById(R.id.posts);
         adapter_post = new PostAdapter(requireContext(), post_list, this);
@@ -96,16 +89,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
                       .commit();
                 });
 
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-                Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
-                startActivity(intent);
-                requireActivity().finish();
-            }
-        });
-
         setAdapterListeners(rootView, adapter_post, adapter_friends);
         return rootView;
     }
@@ -115,19 +98,8 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         TextView posts = view.findViewById(R.id.profile_post_button);
         TextView friends = view.findViewById(R.id.profile_friends_button);
 
-        posts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.setAdapter(adapter_post);
-            }
-        });
-
-        friends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.setAdapter(adapter_friend);
-            }
-        });
+        posts.setOnClickListener(v -> list.setAdapter(adapter_post));
+        friends.setOnClickListener(v -> list.setAdapter(adapter_friend));
 
     }
 
@@ -135,6 +107,7 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     public void onDestroy() {
         super.onDestroy();
         post_list.clear();
+        friend_list.clear();
         post_int_val = 0;
     }
 
@@ -147,35 +120,26 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         DocumentReference userDoc = db.collection("users")
                                       .document(uid);
 
-        userDoc.get()
-               .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                   @Override
-                   public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if (task.isSuccessful()) {
-                           String profilePic = task.getResult()
-                                                   .getString("profilePicture");
-                           String name = task.getResult()
-                                             .getString("username");
+        userDoc.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String profilePic = task.getResult().getString("profilePicture");
+                String name = task.getResult().getString("username");
 
-                           username.setText(name);
-                           if (profilePic != null) {
-                               profilePicture.setImageTintList(null);
-                               Picasso.get()
-                                      .load(profilePic)
-                                      .into(profilePicture);
-                           }
+                username.setText(name);
+                if (profilePic != null) {
+                    profilePicture.setImageTintList(null);
+                    Picasso.get().load(profilePic).into(profilePicture);
+                }
 
-                           int post_list_size = post_list.size();
-                           int friend_list_size = friend_list.size();
-                           String friend_string = "Friends: " + friend_list_size;
-                           String post_string = "Posts: " + post_list_size;
-                           friend_count.setText(friend_string);
-                           post_count.setText(post_string);
-                       } else {
-                           Log.d(TAG, "get failed with ", task.getException());
-                       }
-                   }
-               });
+                int post_list_size = post_list.size();
+                String friend_string = "Friends: " + friend_list.size();
+                String post_string = "Posts: " + post_list_size;
+                friend_count.setText(friend_string);
+                post_count.setText(post_string);
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
     }
 
     private void getUserFriends(String uid) {
@@ -190,11 +154,8 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
                          f.setUsername(document.getString("username"));
                          f.setProfilePic(document.getString("profilePicture"));
                          friend_list.add(f);
-
-                         friend_int_val++;
-                         String outputFriendString = "Friends: " + friend_int_val;
-                         friend_count.setText(outputFriendString);
-
+                            String outputFriendString = "Friends: " + friend_list.size();
+                            friend_count.setText(outputFriendString);
                          adapter_friends.notifyDataSetChanged();
                      }
                  } else {
@@ -256,6 +217,7 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
           });
     }
 
+
     @Override
     public void openPost(Post post) {
         post_list.clear();
@@ -286,7 +248,14 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     }
 
     @Override
-    public void openFriend(String friendId) {
+    public void removeFriend(String friendId) {
+        db.collection("users").document(user.getUid()).update("friends", FieldValue.arrayRemove(friendId));
+        db.collection("users").document(friendId).update("friends", FieldValue.arrayRemove(user.getUid()));
+        friend_list.clear();
+        getUserFriends(user.getUid());
+        adapter_friends = new FriendAdapter(requireContext(), friend_list, this);
+        list.setAdapter(adapter_friends);
 
+        friend_count.setText("Friends: " + friend_list.size());
     }
 }

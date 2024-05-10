@@ -1,6 +1,5 @@
 package com.example.cs4084_project.classes;
 
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.view.View;
@@ -9,21 +8,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.example.cs4084_project.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import androidx.core.content.ContextCompat;
 
 public class FriendAdapter extends BaseAdapter {
 
@@ -76,11 +67,20 @@ public class FriendAdapter extends BaseAdapter {
             Picasso.get().load(friend.getProfilePic()).into(pfp);
         }
 
+        this.setListeners(view, friend);
+
+
         return view;
     }
 
+    private void setListeners(View view, Friend friend) {
+        ImageView remove = view.findViewById(R.id.remove_friend);
+
+        remove.setOnClickListener(v -> openFriendListener.removeFriend(friend.getUid()));
+    }
+
     public interface OpenFriend {
-        void openFriend(String friendId);
+        void removeFriend(String friendId);
     }
 
 }

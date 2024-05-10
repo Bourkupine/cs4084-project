@@ -123,12 +123,6 @@
         android:layout_height="3dp"
         android:background="@color/primary" />
 
-    <Button
-        android:id="@+id/sign_out"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_out" />
-
     <ListView
         android:id="@+id/posts"
         android:layout_width="match_parent"
