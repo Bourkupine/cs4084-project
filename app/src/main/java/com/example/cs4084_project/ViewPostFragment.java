@@ -67,7 +67,7 @@ public class ViewPostFragment extends Fragment {
         }
 
         Button backButton = rootView.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> navigateToPreviousFragment());
+        backButton.setOnClickListener(v -> navigateToHomeFragment());
 
         if (user.getUid().equals(post.getPosterId())) {
             ImageView editButton = rootView.findViewById(R.id.edit_button);
@@ -91,12 +91,13 @@ public class ViewPostFragment extends Fragment {
         return rootView;
     }
 
-    private void navigateToPreviousFragment() {
+    private void navigateToHomeFragment() {
+        Fragment homeFragment = new HomeFragment();
         FragmentManager fm = getParentFragmentManager();
         fm.popBackStack();
         fm.beginTransaction()
                 .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left)
-                .replace(R.id.flFragment, previousFragment)
+                .replace(R.id.flFragment, homeFragment)
                 .commit();
     }
 
@@ -158,7 +159,7 @@ public class ViewPostFragment extends Fragment {
                             });
                         }
                         Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
-                        navigateToPreviousFragment();
+                        navigateToHomeFragment();
                     } else {
                         Toast.makeText(requireContext(), "Error deleting post, please try again", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Error deleting document: ", task.getException());

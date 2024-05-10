@@ -141,7 +141,6 @@ public class Register extends AppCompatActivity {
                             user.put("uid", uid);
                             user.put("email", email);
                             user.put("username", username);
-                            user.put("friends", friends);
                             db.collection("users").document(uid).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
