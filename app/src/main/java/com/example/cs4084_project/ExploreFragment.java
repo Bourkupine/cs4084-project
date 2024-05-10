@@ -159,7 +159,7 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyA5qW1LJjoEIgi2lNX5uJKlBr2hiSXQMTY");
+        googlePlacesUrl.append("&key=" + BuildConfig.MAPS_API_KEY);
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }

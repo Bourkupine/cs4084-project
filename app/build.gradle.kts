@@ -15,8 +15,6 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        // Set API keys in BuildConfig
-        buildConfigField ("String", "API_KEY_NAME", "\"${"API_KEY_NAME"}\"")
     }
 
     buildTypes {
@@ -52,14 +50,16 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-storage")
-    //Maps SDK for Android
+
     implementation("com.google.android.gms:play-services-maps:18.2.0")
-    implementation(libs.google.services.v401)// google-services plugin
+    implementation(libs.google.services.v401)
     implementation("com.github.Dwolla:dwolla-v2-kotlin:0.2.0")
 
-        implementation("com.github.delight-im:Android-SimpleLocation:v1.1.0")
+    implementation("com.github.delight-im:Android-SimpleLocation:v1.1.0")
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+}
 
-
+secrets {
+    propertiesFileName = "secrets.properties"
 }
