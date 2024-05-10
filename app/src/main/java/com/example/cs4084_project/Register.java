@@ -137,7 +137,6 @@ public class Register extends AppCompatActivity {
 
                             FirebaseFirestore db = FirebaseFirestore.getInstance();
                             Map<String, Object> user = new HashMap<>();
-                            ArrayList<String> friends = new ArrayList<>();
                             user.put("uid", uid);
                             user.put("email", email);
                             user.put("username", username);

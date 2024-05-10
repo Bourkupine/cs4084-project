@@ -2,7 +2,6 @@ package com.example.cs4084_project;
 
 import static android.content.ContentValues.TAG;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,7 +46,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     PostAdapter adapter_post;
     FriendAdapter adapter_friends;
     private int post_int_val = 0;
-    private int friend_int_val = 0;
     TextView post_count;
     TextView friend_count;
 
@@ -102,7 +98,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         post_list.clear();
         friend_list.clear();
         post_int_val = 0;
-        friend_int_val = 0;
     }
 
     private void fillUserInfo(View view, String uid) {
@@ -225,11 +220,6 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
                     .replace(R.id.flFragment, viewPostFragment)
                     .commit();
         });
-    }
-
-    @Override
-    public void openFriend(String friendId) {
-
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.example.cs4084_project.classes;
 
-import static android.content.Intent.getIntent;
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.view.View;
@@ -11,11 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.cs4084_project.AccountFragment;
 import com.example.cs4084_project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -85,7 +80,6 @@ public class FriendAdapter extends BaseAdapter {
     }
 
     public interface OpenFriend {
-        void openFriend(String friendId);
         void removeFriend(String friendId);
     }
 
