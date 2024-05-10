@@ -61,6 +61,7 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         db = FirebaseFirestore.getInstance();
         View rootView = inflater.inflate(R.layout.fragment_account, container, false);
 
+        clear();
         if (user == null) {
             Intent intent = new Intent(requireActivity().getApplicationContext(), Login.class);
             startActivity(intent);
@@ -106,6 +107,10 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
     @Override
     public void onDestroy() {
         super.onDestroy();
+        clear();
+    }
+
+    private void clear() {
         post_list.clear();
         friend_list.clear();
         post_int_val = 0;
