@@ -79,7 +79,7 @@ public class FriendAdapter extends BaseAdapter {
             db.collection("users").document(this.user.getUid()).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     ArrayList<String> friends = (ArrayList<String>) task.getResult().get("friends");
-                    if (friends.contains(friend.getUid())) {
+                    if (friends != null && friends.contains(friend.getUid())) {
                         button.setVisibility(View.GONE);
                     }
                 }
