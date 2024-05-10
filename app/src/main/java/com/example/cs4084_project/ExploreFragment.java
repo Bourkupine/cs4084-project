@@ -51,6 +51,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import com.google.api.Context;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -68,7 +69,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     Location currentLoc;
     FusedLocationProviderClient fusedLocationProviderClient;
     GoogleMap googleMap;
-    private SearchView mapSearchView;
     Button btnRestaurant ;
     double latitude;
     double longitude;
@@ -76,8 +76,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
     private int PROXIMITY_RADIUS = 10000;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
-
 
     public ExploreFragment() {
     }
@@ -88,7 +86,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
-
         //Check if Google Play Services Available or not
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
@@ -96,6 +93,8 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         } else {
             Log.d("onCreate", "Google Play Services available.");
         }
+        Toast.makeText(requireContext(), "Click the current location button on the top right", Toast.LENGTH_LONG).show();
+
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,7 +139,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         }
         return true;
     }
-
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     public boolean checkLocationPermission() {
@@ -156,8 +154,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                 ActivityCompat.requestPermissions((Activity) this.getContext(),
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
-
-
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions((Activity) this.getContext(),
@@ -181,8 +177,6 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
     }
-
-
     @Override
     public void onMapReady(@NonNull GoogleMap mGoogleMap) {
 
@@ -198,34 +192,11 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
             // Allow map to be generated and display mGoogleMap
             getLastLoc(mGoogleMap);
         }
-
-
-// Button on click Listener
-        btnRestaurant.setOnClickListener(new View.OnClickListener() {
-            String Cafe = "cafe";
-
-            @Override
-            public void onClick(View v) {
-                Log.d("onClick", "Button is Clicked");
-                mGoogleMap.clear();
-
-                String url = getUrl(currentLoc.getLatitude(), currentLoc.getLongitude(), Cafe);
-                Object[] DataTransfer = new Object[2];
-                DataTransfer[0] = mGoogleMap;
-                DataTransfer[1] = url;
-                Log.d("onClick", url);
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                getNearbyPlacesData.execute(DataTransfer);
-                Toast.makeText(requireContext(), "Nearby Restaurants", Toast.LENGTH_LONG).show();
-            }
-        });
-
     }
 
     private void getLastLoc(GoogleMap googleMap) {
         Task<Location> task;
         task = fusedLocationProviderClient.getLastLocation();
-        Log.d("Uhoh", task.toString());
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
@@ -235,8 +206,24 @@ public class ExploreFragment extends Fragment implements OnMapReadyCallback, Goo
                     googleMap.setMyLocationEnabled(true);
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
                     googleMap.animateCamera(CameraUpdateFactory.zoomBy(10f));
-                    Log.d("Moving Camera", "Trying");
                 }
+            }
+        });
+
+// Button on click Listener
+        btnRestaurant.setOnClickListener(new View.OnClickListener() {
+            String Cafe = "cafe";
+            @Override
+            public void onClick(View v) {
+                googleMap.clear();
+
+                String url = getUrl(currentLoc.getLatitude(), currentLoc.getLongitude(), Cafe);
+                Object[] DataTransfer = new Object[2];
+                DataTransfer[0] = googleMap;
+                DataTransfer[1] = url;
+                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                getNearbyPlacesData.execute(DataTransfer);
+                Toast.makeText(requireContext(), "Nearby Restaurants", Toast.LENGTH_LONG).show();
             }
         });
 
