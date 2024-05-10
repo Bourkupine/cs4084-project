@@ -38,4 +38,14 @@
     <string name="post">Post</string>
     <string name="edit_post">Edit Post</string>
     <string name="remove_friend">Remove Friend</string>
+    <string name="upload_profile_pic">Upload a new profile picture</string>
+    <string name="username_edit_header"><strong>Username</strong></string>
+    <string name="change_username_hint">Enter new username</string>
+    <string name="update_profile_info">Update</string>
+    <string name="current_username">Current Username: %s</string>
+    <string name="username_header">Edit Username</string>
+    <string name="password_header">Edit Password</string>
+    <string name="current_password_text">Enter current password</string>
+    <string name="new_password_text">Enter new password</string>
+    <string name="new_password_confirm_text">Confirm new password</string>
 </resources>

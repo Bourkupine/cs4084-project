@@ -4,10 +4,6 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.cs4084_project.classes.Cafe;
 import com.example.cs4084_project.classes.Comment;
@@ -84,6 +84,12 @@ public class AccountFragment extends Fragment implements PostAdapter.OpenPost, F
         adapter_post = new PostAdapter(requireContext(), post_list,this);
         adapter_friends = new FriendAdapter(requireContext(), friend_list, this);
         list.setAdapter(adapter_post);
+
+        rootView.findViewById(R.id.profile_options).setOnClickListener(v -> {
+            Fragment editProfileFragment = new EditProfileFragment();
+            FragmentManager fm = requireActivity().getSupportFragmentManager();
+            fm.beginTransaction().replace(R.id.flFragment, editProfileFragment).commit();
+        });
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override

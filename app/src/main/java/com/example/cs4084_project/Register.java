@@ -1,6 +1,9 @@
 package com.example.cs4084_project;
 
 import static android.content.ContentValues.TAG;
+import static com.example.cs4084_project.classes.Utils.validateEmail;
+import static com.example.cs4084_project.classes.Utils.validatePassword;
+import static com.example.cs4084_project.classes.Utils.validateUsername;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,8 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
 
@@ -108,7 +109,7 @@ public class Register extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a first name", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!validateName(username)) {
+                } else if (!validateUsername(username)) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(Register.this, "Please enter a valid username between 2 and 32 characters", Toast.LENGTH_SHORT).show();
                     return;
@@ -167,35 +168,5 @@ public class Register extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private static boolean validateEmail(String email) {
-        Pattern pattern;
-        Matcher matcher;
-        final String EMAIL_PATTERN = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        pattern = Pattern.compile(EMAIL_PATTERN);
-        matcher = pattern.matcher(email);
-
-        return matcher.matches();
-    }
-
-    private static boolean validatePassword(String password) {
-        Pattern pattern;
-        Matcher matcher;
-        final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$";
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-
-        return matcher.matches();
-    }
-
-    private static boolean validateName(String name) {
-        Pattern pattern;
-        Matcher matcher;
-        final String NAME_PATTERN = "^[A-Za-z '-]{2,32}$";
-        pattern = Pattern.compile(NAME_PATTERN);
-        matcher = pattern.matcher(name);
-
-        return matcher.matches();
     }
 }

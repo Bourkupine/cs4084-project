@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    tools:context=".EditProfileFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/current_profile_picture"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@color/primary"
+            android:contentDescription="@string/profile_picture"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_account_foreground" />
+
+        <Button
+            android:id="@+id/upload_photo_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:gravity="center"
+            android:text="@string/upload_profile_pic" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:columnCount="2"
+            android:rowCount="10"
+            android:useDefaultMargins="true">
+
+            <TextView
+                android:id="@+id/username_header"
+                android:layout_width="fill_parent"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:background="@color/navbar_brown"
+                android:text="@string/username_header"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/current_username_text"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/edit_username_text"
+                android:layout_width="0dp"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:layout_columnWeight="10"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/change_username_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLength="32"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/update_username_button"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:text="@string/update_profile_info"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/password_header"
+                android:layout_width="fill_parent"
+                android:layout_row="3"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_marginTop="20dp"
+                android:background="@color/navbar_brown"
+                android:text="@string/password_header"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/current_password_text"
+                android:layout_width="0dp"
+                android:layout_row="4"
+                android:layout_column="0"
+                android:layout_columnWeight="100"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/current_password_text"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:maxLength="32"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/new_password_text"
+                android:layout_width="0dp"
+                android:layout_row="5"
+                android:layout_column="0"
+                android:layout_columnWeight="100"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/new_password_text"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:maxLength="32"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/new_password_confirm_text"
+                android:layout_width="0dp"
+                android:layout_row="6"
+                android:layout_column="0"
+                android:layout_columnWeight="100"
+                android:layout_marginEnd="20dp"
+                android:hint="@string/new_password_confirm_text"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:maxLength="32"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/update_password_button"
+                android:layout_row="6"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                android:text="@string/update_profile_info"
+                android:textSize="15sp" />
+
+        </GridLayout>
+
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:text="@string/sign_out"
+            android:textSize="15sp" />
+    </LinearLayout>
+</ScrollView>
