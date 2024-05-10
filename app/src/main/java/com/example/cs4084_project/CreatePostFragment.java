@@ -166,7 +166,7 @@ public class CreatePostFragment extends Fragment implements EnterCafeDialogFragm
     }
 
     private void navigateToPostFragment(Post postToDisplay) {
-        Fragment viewPostFragment = new ViewPostFragment(postToDisplay);
+        Fragment viewPostFragment = new ViewPostFragment(postToDisplay, this);
         FragmentManager fm = getParentFragmentManager();
         fm.popBackStack();
         fm.beginTransaction()

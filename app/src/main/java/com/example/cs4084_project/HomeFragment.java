@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OpenPost {
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
             }
-            Fragment viewPostFragment = new ViewPostFragment(post);
+            Fragment viewPostFragment = new ViewPostFragment(post, this);
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out)
                     .addToBackStack(null)

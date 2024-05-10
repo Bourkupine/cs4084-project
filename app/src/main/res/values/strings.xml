@@ -17,6 +17,9 @@
     <string name="image">image</string>
     <string name="create_post">Create Post</string>
     <string name="enter_user_name">Enter User Name</string>
+    <string name="username">username</string>
+    <string name="post_count">Posts: </string>
+    <string name="friends_count">Friends: 0</string>
     <string name="post_title">Post Title</string>
     <string name="post_description">Post Description</string>
     <string name="select_image">Select Image</string>
@@ -34,4 +37,5 @@
     <string name="delete">delete</string>
     <string name="post">Post</string>
     <string name="edit_post">Edit Post</string>
+    <string name="remove_friend">Remove Friend</string>
 </resources>

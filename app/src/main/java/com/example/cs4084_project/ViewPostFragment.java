@@ -44,9 +44,12 @@ public class ViewPostFragment extends Fragment {
     private FirebaseFirestore db;
     private CommentAdapter adapter;
     private EditText commentEditText;
+    Fragment previousFragment;
 
-    public ViewPostFragment(Post post) {
+
+    public ViewPostFragment(Post post, Fragment previousFragment) {
         this.post = post;
+        this.previousFragment = previousFragment;
     }
 
     @Override
